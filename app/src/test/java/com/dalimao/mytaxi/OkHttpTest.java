@@ -1,6 +1,6 @@
 package com.dalimao.mytaxi;
 
-import com.dalimao.mytaxi.util.MyLoger;
+import com.dalimao.mytaxi.common.util.MyLoger;
 
 import org.junit.Test;
 
@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
-import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

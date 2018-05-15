@@ -4,6 +4,7 @@ import com.dalimao.mytaxi.common.http.IHttpClient;
 import com.dalimao.mytaxi.common.http.IRequest;
 import com.dalimao.mytaxi.common.http.IResponse;
 import com.dalimao.mytaxi.common.http.api.API;
+import com.dalimao.mytaxi.common.util.MyLoger;
 
 import java.io.IOException;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class OkHttpClientImpl implements IHttpClient {
             builder.header(key,header.get(key));
         }
         builder.url(request.getUrl()).get();
+        MyLoger.dd("request:",request.getUrl());
         Request okRequest = builder.build();
         return excute(okRequest);
     }
@@ -48,6 +50,7 @@ public class OkHttpClientImpl implements IHttpClient {
         }
         builder.url(request.getUrl())
                 .post(body);
+        MyLoger.dd("request:",request.getUrl());
         Request okRequest = builder.build();
         return excute(okRequest);
     }
@@ -57,6 +60,7 @@ public class OkHttpClientImpl implements IHttpClient {
             Response response = client.newCall(okRequest).execute();
             commonResponse.setCode(response.code());
             String body=response.body().string();
+            MyLoger.dd("response:",body);
             commonResponse.setData(body);
         } catch (IOException e) {
             e.printStackTrace();

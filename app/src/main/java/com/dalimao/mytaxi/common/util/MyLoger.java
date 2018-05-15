@@ -1,4 +1,4 @@
-package com.dalimao.mytaxi.util;
+package com.dalimao.mytaxi.common.util;
 
 import android.util.Log;
 
@@ -22,6 +22,11 @@ public class MyLoger {
     public static void d(String msg){
         if (IsDebug){
             Log.d(TAG,msg);
+        }
+    }
+    public static void dd(String Tag,String msg){
+        if (IsDebug){
+            Log.d(Tag,msg);
         }
     }
 }

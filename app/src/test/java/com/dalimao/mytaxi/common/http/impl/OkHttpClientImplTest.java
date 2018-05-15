@@ -4,13 +4,10 @@ import com.dalimao.mytaxi.common.http.IHttpClient;
 import com.dalimao.mytaxi.common.http.IRequest;
 import com.dalimao.mytaxi.common.http.IResponse;
 import com.dalimao.mytaxi.common.http.api.API;
-import com.dalimao.mytaxi.util.MyLoger;
+import com.dalimao.mytaxi.common.util.MyLoger;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.Result;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by liulan on 2018/5/12.
