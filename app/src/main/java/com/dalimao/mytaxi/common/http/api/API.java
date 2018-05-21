@@ -11,9 +11,9 @@ public class API {
     //获取验证码
     public static final String GET_SMS_CODE = Config.getDomain()+"/f34e28da5816433d/getMsgCode?phone=${phone}";
     //校验验证码
-    public static final String CHECK_SMS_CODE = Config.getDomain()+"f34e28da5816433d/checkMsgCode?phone=${phone}&code=${code}";
+    public static final String CHECK_SMS_CODE = Config.getDomain()+"/f34e28da5816433d/checkMsgCode?phone=${phone}&code=${code}";
     //手机是否注册
-    public static  final String IS_PHONE_REGISTER = Config.getDomain()+"";
+    public static  final String CHECK_USER_EXIST = Config.getDomain()+"/f34e28da5816433d/isUserExist?phone=${phone}";
     //用户注册
     public static  final String REGISTER = Config.getDomain()+"";
     //账号登录

@@ -8,6 +8,9 @@ package com.dalimao.mytaxi.common.biz;
 public class BaseBizResponse
 {
     public static final int STATE_OK = 200;
+    public static final int STATE_USER_EXIST = 100003;
+    public static final int STATE_USER_NOT_EXIT = 100002;
+
     private int code;
     private String msg;
 

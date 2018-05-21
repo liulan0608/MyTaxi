@@ -35,7 +35,7 @@ public class OkHttpClientImplTest {
 
     @Test
     public void post() throws Exception {
-        String url= API.Config.getDomain()+API.TEST_POST;git
+        String url= API.Config.getDomain()+API.TEST_POST;
         IRequest request = new BaseRequest(url);
         request.setBody("name","lanlan");
         request.setBody("passowrd","123");

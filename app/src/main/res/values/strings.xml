@@ -5,4 +5,7 @@
     <string name="login">登录</string>
     <string name="next">下一步</string>
     <string name="hint_input_phone">请输入手机号码</string>
+    <string name="sms_send_fail">服务器响应异常</string>
+    <string name="sms_check_fail">验证码错误</string>
+    <string name="error_server_msg">服务器繁忙</string>
 </resources>

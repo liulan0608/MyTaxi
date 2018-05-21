@@ -9,6 +9,7 @@ import com.dalimao.mytaxi.common.http.IResponse;
 
 public class BaseResponse implements IResponse{
     public static  final int STATE_UNKNOWN = 100001;
+    public static final int STATE_OK = 200;
     //状态吗
     private int code;
     //响应数据
