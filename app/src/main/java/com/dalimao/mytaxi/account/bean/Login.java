@@ -7,7 +7,7 @@ package com.dalimao.mytaxi.account.bean;
  */
 public class Login {
     private String uid;
-    private String expired;
+    private long expired;
     private String account;
     private String token;
 
@@ -19,11 +19,11 @@ public class Login {
         this.uid = uid;
     }
 
-    public String getExpired() {
+    public long getExpired() {
         return expired;
     }
 
-    public void setExpired(String expired) {
+    public void setExpired(long expired) {
         this.expired = expired;
     }
 

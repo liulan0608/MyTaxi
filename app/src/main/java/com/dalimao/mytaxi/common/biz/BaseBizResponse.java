@@ -11,6 +11,7 @@ public class BaseBizResponse
     public static final int STATE_USER_EXIST = 100003;
     public static final int STATE_USER_NOT_EXIT = 100002;
     public static final int STATE_PW_ERROR = 100005;
+    public static final int STATE_TOKEN_INVALID = 100006;
 
     private int code;
     private String msg;

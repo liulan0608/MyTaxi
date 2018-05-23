@@ -90,9 +90,6 @@ public class LoginDialog extends Dialog {
 
             }
         }
-
-
-
     }
     public LoginDialog(Context context,String phone) {
         this(context, R.style.Dialog);
@@ -157,6 +154,7 @@ public class LoginDialog extends Dialog {
                     if (loginRes.getCode() == BaseBizResponse.STATE_OK){
                         //保存登陆信息
                         Login login = loginRes.getData();
+                        // TODO: 2018/5/23 加密存储 登录信息比较敏感
                         SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance()
                                 ,SharedPreferencesDao.FILE_ACCOUNT);
                         dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
