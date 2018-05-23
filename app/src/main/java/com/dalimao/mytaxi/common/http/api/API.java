@@ -15,11 +15,11 @@ public class API {
     //手机是否注册
     public static  final String CHECK_USER_EXIST = Config.getDomain()+"/f34e28da5816433d/isUserExist?phone=${phone}";
     //用户注册
-    public static  final String REGISTER = Config.getDomain()+"";
+    public static  final String REGISTER = Config.getDomain()+"/f34e28da5816433d/register";
     //账号登录
-    public static  final String LOGIN_PHONE = Config.getDomain()+"";
+    public static  final String LOGIN_PHONE = Config.getDomain()+"/f34e28da5816433d/auth";
     //自动登录（token登录）
-    public static  final String LOGIN_TOKEN = Config.getDomain()+"";
+    public static  final String LOGIN_TOKEN = Config.getDomain()+"/f34e28da5816433d/login";
     //司机位置变化
     public static  final String DRIVER_POSITION_CHANGE = Config.getDomain()+"";
 

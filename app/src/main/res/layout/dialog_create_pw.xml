@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:src="@drawable/btn_close"
+            android:layout_alignParentRight="true"
+            android:padding="16sp"
+            android:id="@+id/close"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <LinearLayout
+        android:padding="64dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="创建密码"
+            android:id="@+id/dialog_title"
+            style="@style/Dialog.Title"
+            android:gravity="center_horizontal"/>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/Dialog.Input"
+    android:id="@+id/phone"
+    tools:text="你的手机号为：15923232354"
+    android:gravity="center_horizontal"
+    />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入密码"
+            android:id="@+id/pw"
+            style="@style/Dialog.Input"
+            android:inputType="textPassword"/>
+<EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请再次输入密码"
+            android:id="@+id/pw1"
+            style="@style/Dialog.Input"
+            android:inputType="textPassword"/>
+
+<ProgressBar
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/loading"
+    style="@style/Loading"
+    android:visibility="gone"
+    android:layout_gravity="center_horizontal"
+    />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="错误"
+            android:gravity="center"
+            android:textColor="@color/error_red"
+            android:visibility="gone"
+            android:id="@+id/tips"
+            style="@style/Tips"
+            />
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_confirm"
+        style="@style/Dialog.Button"
+        android:text="确认"
+        />
+</LinearLayout>

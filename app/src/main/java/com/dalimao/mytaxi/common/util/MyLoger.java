@@ -1,6 +1,8 @@
 package com.dalimao.mytaxi.common.util;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by liulan on 2018/5/12.
@@ -28,5 +30,8 @@ public class MyLoger {
         if (IsDebug){
             Log.d(Tag,msg);
         }
+    }
+    public static void toast(Context context,String msg){
+        Toast.makeText(context,msg,Toast.LENGTH_LONG).show();
     }
 }

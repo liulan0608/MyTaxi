@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.dalimao.corelibrary.VerificationCodeInput;
 import com.dalimao.mytaxi.R;
+import com.dalimao.mytaxi.account.bean.Login;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.http.IHttpClient;
 import com.dalimao.mytaxi.common.http.IRequest;
@@ -95,7 +96,7 @@ public class SmsCodeDialog extends Dialog {
                     Toast.makeText(dialog.getContext(),dialog.getContext().getString(R.string.sms_send_fail),Toast.LENGTH_LONG).show();
                     break;
                 case SMS_CHECK_SUCCESS:
-                    dialog.showVerifyState(true);
+                dialog.showVerifyState(true);
                     break;
                 case SMS_CHECK_FAIL:
                     //验证码成功
@@ -168,7 +169,7 @@ public class SmsCodeDialog extends Dialog {
                     mHandler.sendEmptyMessage(SMS_SEND_FAIL);
                 }
                 }else{
-
+                    mHandler.sendEmptyMessage(SMS_SERVER_FAIL);
                 }
             }
         }.start();
@@ -286,11 +287,13 @@ public class SmsCodeDialog extends Dialog {
             mErrorView.setVisibility(View.GONE);
             dismiss();
             if (!exist){
-                // TODO:  用户不存在，进入注册
-
+                // 用户不存在，进入注册
+                CreatePasswordDialog dialog = new CreatePasswordDialog(getContext(),mPhone);
+                dialog.show();
             } else {
-                // TODO: 用户存在，进入登录
-
+                // 用户存在，进入登录
+                LoginDialog dialog = new LoginDialog(getContext(),mPhone);
+                    dialog.show();
             }
         }
 }
