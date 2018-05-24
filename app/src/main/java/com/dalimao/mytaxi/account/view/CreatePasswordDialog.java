@@ -1,14 +1,11 @@
-package com.dalimao.mytaxi.account;
+package com.dalimao.mytaxi.account.view;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,8 +16,8 @@ import android.widget.Toast;
 
 import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.R;
-import com.dalimao.mytaxi.account.bean.Login;
-import com.dalimao.mytaxi.account.response.LoginResponse;
+import com.dalimao.mytaxi.account.model.response.Login;
+import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.http.IHttpClient;
 import com.dalimao.mytaxi.common.http.IRequest;
@@ -31,7 +28,6 @@ import com.dalimao.mytaxi.common.http.impl.BaseResponse;
 import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
 import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.DevUtil;
-import com.dalimao.mytaxi.common.util.FormaUtil;
 import com.google.gson.Gson;
 
 import java.lang.ref.SoftReference;
@@ -151,28 +147,7 @@ public class CreatePasswordDialog extends Dialog {
             final String pasword = ed_pw.getText().toString();
             final String phone = mPhoneStr;
             //请求网络，提交注册
-            new Thread(){
-                @Override
-                public void run() {
-                    String url= API.REGISTER;
-                    IRequest request = new BaseRequest(url);
-                    request.setBody("phone",phone);
-                    request.setBody("password",pasword);
-                    request.setBody("uid", DevUtil.UUID(getContext()));
-                    IResponse response = mHttpClient.post(request,false);
-                    if (response.getCode() == BaseResponse.STATE_OK){
-                        BaseBizResponse bizREs = new Gson().fromJson(response.getData(),BaseBizResponse.class);
-                        if (bizREs.getCode() == BaseBizResponse.STATE_OK){
-                            mHandler.sendEmptyMessage(REGISTER_SUC);
-                        }else {
-                            mHandler.sendEmptyMessage(SERVER_FAIL);
-                        }
-                    }else {
-                        mHandler.sendEmptyMessage(SERVER_FAIL);
-                    }
 
-                }
-            }.start();
         }
     }
 
@@ -207,32 +182,7 @@ public class CreatePasswordDialog extends Dialog {
         tv_tips.setTextColor(getContext().getResources().getColor(R.color.color_text_normal));
         tv_tips.setText("注册成功，正在为您自动登录");
         //todo： 请求网络，完成自动登录
-        new Thread(){
-            @Override
-            public void run() {
-                String url= API.LOGIN_PHONE;
-                IRequest request = new BaseRequest(url);
-                request.setBody("phone",tv_phone.getText().toString());
-                request.setBody("password",ed_pw.getText().toString());
-                IResponse response = mHttpClient.post(request,false);
-                if (response.getCode() == BaseResponse.STATE_OK){
-                    LoginResponse loginRes = new Gson().fromJson(response.getData(),LoginResponse.class);
-                    if (loginRes.getCode() == BaseBizResponse.STATE_OK){
-                        //保存登陆信息
-                        Login login = loginRes.getData();
-                        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance()
-                                ,SharedPreferencesDao.FILE_ACCOUNT);
-                        dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
-                        mHandler.sendEmptyMessage(LONGIN_SUC);
-                    }else {
-                        mHandler.sendEmptyMessage(PASSWORD_ERROR);
-                    }
-                }else {
-                    mHandler.sendEmptyMessage(SERVER_FAIL);
-                }
 
-            }
-        }.start();
 
     }
 

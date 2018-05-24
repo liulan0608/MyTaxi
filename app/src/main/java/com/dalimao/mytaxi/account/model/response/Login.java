@@ -1,4 +1,4 @@
-package com.dalimao.mytaxi.account.bean;
+package com.dalimao.mytaxi.account.model.response;
 
 /**
  * author: apple

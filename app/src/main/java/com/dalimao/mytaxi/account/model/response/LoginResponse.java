@@ -1,6 +1,5 @@
-package com.dalimao.mytaxi.account.response;
+package com.dalimao.mytaxi.account.model.response;
 
-import com.dalimao.mytaxi.account.bean.Login;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 
 /**
