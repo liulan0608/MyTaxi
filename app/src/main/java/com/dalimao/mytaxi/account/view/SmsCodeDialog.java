@@ -4,13 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dalimao.corelibrary.VerificationCodeInput;
 import com.dalimao.mytaxi.MyTaxiApplication;
@@ -19,19 +16,10 @@ import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.pressenter.ISmsCodeDialogPresenter;
 import com.dalimao.mytaxi.account.pressenter.SmsCodeDialogPresenterImpl;
-import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.http.IHttpClient;
-import com.dalimao.mytaxi.common.http.IRequest;
-import com.dalimao.mytaxi.common.http.IResponse;
-import com.dalimao.mytaxi.common.http.api.API;
-import com.dalimao.mytaxi.common.http.impl.BaseRequest;
-import com.dalimao.mytaxi.common.http.impl.BaseResponse;
 import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
 import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.MyLoger;
-import com.google.gson.Gson;
-
-import java.lang.ref.SoftReference;
 
 /**
  * author: apple

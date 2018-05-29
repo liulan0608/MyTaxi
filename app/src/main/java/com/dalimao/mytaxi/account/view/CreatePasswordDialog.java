@@ -14,21 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.R;
-import com.dalimao.mytaxi.account.model.response.Login;
-import com.dalimao.mytaxi.account.model.response.LoginResponse;
-import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.http.IHttpClient;
-import com.dalimao.mytaxi.common.http.IRequest;
-import com.dalimao.mytaxi.common.http.IResponse;
-import com.dalimao.mytaxi.common.http.api.API;
-import com.dalimao.mytaxi.common.http.impl.BaseRequest;
-import com.dalimao.mytaxi.common.http.impl.BaseResponse;
 import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
-import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
-import com.dalimao.mytaxi.common.util.DevUtil;
-import com.google.gson.Gson;
 
 import java.lang.ref.SoftReference;
 

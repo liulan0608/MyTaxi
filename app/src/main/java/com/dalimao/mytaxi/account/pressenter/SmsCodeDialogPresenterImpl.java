@@ -59,6 +59,7 @@ public class SmsCodeDialogPresenterImpl implements ISmsCodeDialogPresenter{
     public SmsCodeDialogPresenterImpl(ISmsCodeDialogView view, IAccountManager accountManager) {
         this.view = view;
         this.accountManager = accountManager;
+        accountManager.setHandler(new MyHandler(this));
     }
 
     /**
