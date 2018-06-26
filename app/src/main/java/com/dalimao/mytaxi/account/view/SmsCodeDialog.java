@@ -10,15 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.dalimao.corelibrary.VerificationCodeInput;
-import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.R;
-import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.pressenter.ISmsCodeDialogPresenter;
 import com.dalimao.mytaxi.account.pressenter.SmsCodeDialogPresenterImpl;
-import com.dalimao.mytaxi.common.http.IHttpClient;
-import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
-import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
 /**
@@ -60,10 +55,8 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
     public SmsCodeDialog(Context context,String phone) {
         super(context);
         this.mPhone = phone;
-        IHttpClient httpClient = new OkHttpClientImpl();
-        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance(),SharedPreferencesDao.FILE_ACCOUNT);
-        IAccountManager accountManager =new AccountManagerImpl(httpClient,dao);
-        mPresenter = new SmsCodeDialogPresenterImpl(this,accountManager);
+
+        mPresenter = new SmsCodeDialogPresenterImpl(this);
     }
 
     @Override
@@ -155,7 +148,6 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
         }
 
     }
-
     @Override
     public void showCountDownTimer() {
         //启动倒计时
@@ -179,7 +171,7 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
             mErrorView.setVisibility(View.GONE);
             mLoading.setVisibility(View.VISIBLE);
             // 检查用户是否存在
-
+            mPresenter.requestCheckUserExist(mPhone);
         }
     }
     @Override
@@ -194,7 +186,7 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
             } else {
                 // 用户存在，进入登录
                 LoginDialog dialog = new LoginDialog(getContext(),mPhone);
-                    dialog.show();
+                dialog.show();
             }
         }
 }

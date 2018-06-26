@@ -3,8 +3,6 @@ package com.dalimao.mytaxi.account.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,24 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dalimao.mytaxi.R;
-import com.dalimao.mytaxi.common.http.IHttpClient;
-import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
-
-import java.lang.ref.SoftReference;
+import com.dalimao.mytaxi.account.pressenter.CreatePasswordDialogPresenterImpl;
+import com.dalimao.mytaxi.account.pressenter.ICreatePassordDialogPresenter;
 
 /**
  * author: apple
  * created on: 2018/5/15 上午10:03
  * description:
  */
-public class CreatePasswordDialog extends Dialog {
+public class CreatePasswordDialog extends Dialog implements ICreatePasswordDialogView{
 
     private static final String TAG = "CreatePasswordDialog";
-    private static final int REGISTER_SUC = 1;
-    private static final int SERVER_FAIL = 100;
-    private static final int PASSWORD_ERROR = 100005;
-    private static final int LONGIN_SUC = 2;
-
     private TextView tv_title;
     private TextView tv_phone;
     private EditText ed_pw;
@@ -40,48 +31,16 @@ public class CreatePasswordDialog extends Dialog {
     private Button btn_confirm;
     private ProgressBar mLoading;
     private TextView tv_tips;
-    private IHttpClient mHttpClient;
     private String mPhoneStr;
-    private MyHandler mHandler;
 
-    /**
-     * 接收子线程消息的Handler
-     */
-    static class MyHandler extends Handler{
-        SoftReference<CreatePasswordDialog> codeDialogRef;
+    private ICreatePassordDialogPresenter passwordPresenter;
 
-        public MyHandler(CreatePasswordDialog codeDialog) {
-            codeDialogRef = new SoftReference<CreatePasswordDialog>(codeDialog);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            CreatePasswordDialog dialog = codeDialogRef.get();
-            if (dialog == null){
-                return;
-            }
-            //处理UI变化
-            switch (msg.what){
-                case REGISTER_SUC:
-                    //注册成功
-                    dialog.showRegisterSuc();
-                    break;
-                case LONGIN_SUC:
-                    dialog.showLoginSuc();
-                    break;
-                case SERVER_FAIL:
-                    //注册不成功
-                    dialog.showServerError();
-                    break;
-
-            }
-        }
-    }
 
     /**
      * 登陆成功
      */
-    private void showLoginSuc() {
+    @Override
+    public void showLoginSuc() {
         dismiss();
         Toast.makeText(getContext(),"登陆成功",Toast.LENGTH_LONG).show();
     }
@@ -89,8 +48,7 @@ public class CreatePasswordDialog extends Dialog {
     public CreatePasswordDialog(Context context,String phone) {
         super(context,R.style.Dialog);
         mPhoneStr = phone;
-        mHttpClient = new OkHttpClientImpl();
-        mHandler = new MyHandler(this);
+        passwordPresenter = new CreatePasswordDialogPresenterImpl(this);
     }
 
     @Override
@@ -131,22 +89,17 @@ public class CreatePasswordDialog extends Dialog {
         super.dismiss();
     }
     private void submit() {
-        if (checkPassword()){
-            final String pasword = ed_pw.getText().toString();
-            final String phone = mPhoneStr;
-            //请求网络，提交注册
-
+         String pasword = ed_pw.getText().toString();
+        if (checkPassword(pasword)){
+            //提交注册
+            passwordPresenter.requestRegister(mPhoneStr,pasword);
         }
     }
-
-
-
 
     /**
      * 检查密码输入
      */
-    private boolean checkPassword(){
-        String password = ed_pw.getText().toString();
+    private boolean checkPassword(String password){
         if (TextUtils.isEmpty(password)){
             tv_tips.setVisibility(View.VISIBLE);
             tv_tips.setText("密码不能为空");
@@ -163,21 +116,25 @@ public class CreatePasswordDialog extends Dialog {
     /**
      * 处理注册成功
      */
-    private void showRegisterSuc() {
+    @Override
+    public void showRegisterSuc() {
         mLoading.setVisibility(View.VISIBLE);
         btn_confirm.setVisibility(View.GONE);
         tv_tips.setVisibility(View.VISIBLE);
         tv_tips.setTextColor(getContext().getResources().getColor(R.color.color_text_normal));
         tv_tips.setText("注册成功，正在为您自动登录");
-        //todo： 请求网络，完成自动登录
+        //自动登录
+        passwordPresenter.requestLogin(mPhoneStr,ed_pw.getText().toString());
+    }
 
+    @Override
+    public void showLoading() {
 
     }
 
-    private void showServerError() {
+    @Override
+    public void showError(int Code, String msg) {
         tv_tips.setText("服务器繁忙");
         tv_tips.setTextColor(getContext().getResources().getColor(R.color.error_red));
-
     }
-
 }

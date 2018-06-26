@@ -13,6 +13,7 @@ import com.dalimao.mytaxi.common.http.IResponse;
 import com.dalimao.mytaxi.common.http.api.API;
 import com.dalimao.mytaxi.common.http.impl.BaseRequest;
 import com.dalimao.mytaxi.common.http.impl.BaseResponse;
+import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
 import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.DevUtil;
 import com.google.gson.Gson;
@@ -35,6 +36,10 @@ public class AccountManagerImpl implements IAccountManager{
 
     public AccountManagerImpl(IHttpClient httpClient, SharedPreferencesDao sharedPreferencesDao) {
         this.httpClient = httpClient;
+        this.sharedPreferencesDao = sharedPreferencesDao;
+        mContext = MyTaxiApplication.getInstance();
+    } public AccountManagerImpl( SharedPreferencesDao sharedPreferencesDao) {
+        this.httpClient = new OkHttpClientImpl();;
         this.sharedPreferencesDao = sharedPreferencesDao;
         mContext = MyTaxiApplication.getInstance();
     }
