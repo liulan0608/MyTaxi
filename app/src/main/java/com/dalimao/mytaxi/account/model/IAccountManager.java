@@ -9,25 +9,25 @@ import android.os.Handler;
  */
 public interface IAccountManager {
     //服务器错误
-     static final int SERVER_FAIL = -999;
+    int SERVER_FAIL = -999;
     //验证码发送成功
-     static final int SMS_SEND_SUC = 1;
+    int SMS_SEND_SUC = 1;
     //验证码发送失败
-     static final int SMS_SEND_FAIL = -1;
+    int SMS_SEND_FAIL = -1;
     //验证码校验成功
-     static final int SMS_CHECK_SUC = 2;
+    int SMS_CHECK_SUC = 2;
     //验证码错误
-     static final int SMS_CHECK_FAIL = -2;
+    int SMS_CHECK_FAIL = -2;
     //用户已经存在
-     static final int USER_EXIST = 3;
+    int USER_EXIST = 3;
     //用户不存在
-     static final int USER_NOT_EXIST = -3;
+    int USER_NOT_EXIST = -3;
     //注册成功
-     static final int REGISTER_SIUC = 4;
+    int REGISTER_SIUC = 4;
     //登录成功
-     static final int LOGIN_SUC = 5;
+    int LOGIN_SUC = 5;
     //登录失效
-     static final int TOKEN_INVALID = -6;
+    int TOKEN_INVALID = -6;
 
     void setHandler(Handler handler);
     /**
