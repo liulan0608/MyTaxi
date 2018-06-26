@@ -3,8 +3,14 @@ package com.dalimao.mytaxi.account.pressenter;
 import android.os.Handler;
 import android.os.Message;
 
+import com.dalimao.mytaxi.MyTaxiApplication;
+import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.view.ISmsCodeDialogView;
+import com.dalimao.mytaxi.common.http.IHttpClient;
+import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
+import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
+import com.dalimao.mytaxi.common.util.Global;
 
 import java.lang.ref.WeakReference;
 
@@ -44,6 +50,7 @@ public class SmsCodeDialogPresenterImpl implements ISmsCodeDialogPresenter{
                     presenter.view.showSmsCodeCheckState(true);
                     break;
                 case IAccountManager.SMS_CHECK_FAIL:
+                    presenter.view.showSmsCodeCheckState(false);
                     presenter.view.showError(IAccountManager.SMS_CHECK_FAIL,"");
                     break;
                 case IAccountManager.USER_EXIST:
@@ -56,9 +63,9 @@ public class SmsCodeDialogPresenterImpl implements ISmsCodeDialogPresenter{
             }
         }
     }
-    public SmsCodeDialogPresenterImpl(ISmsCodeDialogView view, IAccountManager accountManager) {
+    public SmsCodeDialogPresenterImpl(ISmsCodeDialogView view) {
         this.view = view;
-        this.accountManager = accountManager;
+        this.accountManager = new AccountManagerImpl(Global.sharedPrefDao);
         accountManager.setHandler(new MyHandler(this));
     }
 
