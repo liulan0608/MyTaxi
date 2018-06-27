@@ -44,6 +44,9 @@ public class CreatePasswordDialogPresenterImpl implements ICreatePassordDialogPr
                 case IAccountManager.LOGIN_SUC:
                     presenter.view.showLoginSuc();
                     break;
+                case IAccountManager.PASSWORD_ERROR:
+                    presenter.view.showError(IAccountManager.PASSWORD_ERROR,"");
+                    break;
                 case IAccountManager.SERVER_FAIL:
                     presenter.view.showError(IAccountManager.SERVER_FAIL,"");
                     break;

@@ -8,6 +8,8 @@ import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.view.ILoginDialogView;
 import com.dalimao.mytaxi.common.util.Global;
 
+import java.lang.ref.WeakReference;
+
 /**
  * author: apple
  * created on: 2018/6/26 下午6:10
@@ -29,14 +31,26 @@ public class LoginDialogPresenterImpl implements ILoginDialogPresenter {
     }
 
     private class MyHandler extends Handler {
+        WeakReference<LoginDialogPresenterImpl> loginDialogRef;
         public MyHandler(LoginDialogPresenterImpl loginDialogPresenter) {
+            loginDialogRef = new WeakReference<LoginDialogPresenterImpl>(loginDialogPresenter);
 
         }
 
         @Override
         public void handleMessage(Message msg) {
+           LoginDialogPresenterImpl presenter = loginDialogRef.get();
             switch (msg.what){
-                case
+                case IAccountManager.LOGIN_SUC:
+                    presenter.view.showLoginSuc();
+                    break;
+                case IAccountManager.PASSWORD_ERROR:
+                    presenter.view.showError(IAccountManager.PASSWORD_ERROR,"");
+                    break;
+                case IAccountManager.SERVER_FAIL:
+                    presenter.view.showError(IAccountManager.SERVER_FAIL,"");
+                    break;
+
             }
         }
     }

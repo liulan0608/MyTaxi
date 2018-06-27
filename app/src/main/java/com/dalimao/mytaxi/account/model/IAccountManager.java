@@ -26,8 +26,11 @@ public interface IAccountManager {
     int REGISTER_SIUC = 4;
     //登录成功
     int LOGIN_SUC = 5;
+
     //登录失效
     int TOKEN_INVALID = -6;
+    //密码错误
+    int PASSWORD_ERROR = -7;
 
     void setHandler(Handler handler);
     /**

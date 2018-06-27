@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.R;
+import com.dalimao.mytaxi.account.model.IAccountManager;
+import com.dalimao.mytaxi.account.pressenter.IMainActivityPresenter;
+import com.dalimao.mytaxi.account.pressenter.MainActivityPresenterImpl;
 import com.dalimao.mytaxi.account.view.PhoneInputDialog;
 import com.dalimao.mytaxi.account.model.response.Login;
 import com.dalimao.mytaxi.account.model.response.LoginResponse;
@@ -29,47 +32,43 @@ import com.google.gson.Gson;
  * 4 token 有效使用 token 自动登录
  * todo 地图初始化
  */
-public class MainActivity extends AppCompatActivity{
-    OkHttpClientImpl mHttpClient;
-
+public class MainActivity extends AppCompatActivity implements IMainAcitivityView{
+    IMainActivityPresenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mHttpClient = new OkHttpClientImpl();
-        checkLoginState();
+       presenter = new MainActivityPresenterImpl(this);
+        presenter.requestLoginByToken();
     }
-
-    private void checkLoginState() {
-        //  获取本地登陆信息
-        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance(),SharedPreferencesDao.FILE_ACCOUNT);
-           Login login = (Login) dao.get(SharedPreferencesDao.KEY_ACCOUNT,Login.class);
-        
-        //登陆是否过期
-        boolean tokenValid = false;
-
-        // 检查 token 是否过期
-        if (login!=null){
-            if (login.getExpired() > System.currentTimeMillis()){
-                tokenValid = true;
-            }
-        }
-        if (!tokenValid){
-            showPhoneInputDialog();
-        }else{
-            final String token =login.getToken();
-            // 请求网络，完成自动登陆
-
-        }
-    }
-
     /**
      * 显示手机输入框
      */
     private void showPhoneInputDialog() {
         PhoneInputDialog dialog= new PhoneInputDialog(this);
         dialog.show();
+    }
+
+    @Override
+    public void showLoginSuc() {
+        MyLoger.toast(this,"登陆成功");
+    }
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showError(int Code, String msg) {
+        switch (Code){
+            case IAccountManager.TOKEN_INVALID:
+                showPhoneInputDialog();
+                break;
+            case IAccountManager.SERVER_FAIL:
+                MyLoger.toast(this,"网络繁忙");
+                showPhoneInputDialog();
+                break;
+        }
     }
 
 

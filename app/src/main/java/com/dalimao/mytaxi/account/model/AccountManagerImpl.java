@@ -193,8 +193,8 @@ public class AccountManagerImpl implements IAccountManager{
                                 ,SharedPreferencesDao.FILE_ACCOUNT);
                         dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
                         handler.sendEmptyMessage(LOGIN_SUC);
-                    }else {
-                        handler.sendEmptyMessage(SERVER_FAIL);
+                    }else if (loginRes.getCode() == BaseBizResponse.STATE_PW_ERROR){
+                        handler.sendEmptyMessage(PASSWORD_ERROR);
                     }
                 }else {
                     handler.sendEmptyMessage(SERVER_FAIL);
