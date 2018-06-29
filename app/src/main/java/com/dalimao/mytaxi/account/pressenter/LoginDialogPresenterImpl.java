@@ -9,7 +9,6 @@ import com.dalimao.mytaxi.account.view.ILoginDialogView;
 import com.dalimao.mytaxi.common.util.Global;
 
 import java.lang.ref.WeakReference;
-
 /**
  * author: apple
  * created on: 2018/6/26 下午6:10

@@ -3,13 +3,9 @@ package com.dalimao.mytaxi.account.pressenter;
 import android.os.Handler;
 import android.os.Message;
 
-import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.view.ICreatePasswordDialogView;
-import com.dalimao.mytaxi.common.http.IHttpClient;
-import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
-import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.Global;
 
 import java.lang.ref.WeakReference;

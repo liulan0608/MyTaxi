@@ -145,6 +145,5 @@ public class CreatePasswordDialog extends Dialog implements ICreatePasswordDialo
                 tv_tips.setText("服务器繁忙");
                 break;
         }
-
     }
 }

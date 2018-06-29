@@ -3,8 +3,6 @@ package com.dalimao.mytaxi.account.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,28 +10,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.R;
-import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
-import com.dalimao.mytaxi.account.model.response.Login;
-import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.account.pressenter.ILoginDialogPresenter;
 import com.dalimao.mytaxi.account.pressenter.LoginDialogPresenterImpl;
-import com.dalimao.mytaxi.common.biz.BaseBizResponse;
-import com.dalimao.mytaxi.common.http.IHttpClient;
-import com.dalimao.mytaxi.common.http.IRequest;
-import com.dalimao.mytaxi.common.http.IResponse;
-import com.dalimao.mytaxi.common.http.api.API;
-import com.dalimao.mytaxi.common.http.impl.BaseRequest;
-import com.dalimao.mytaxi.common.http.impl.BaseResponse;
-import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
-import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
-import com.dalimao.mytaxi.common.util.Global;
 import com.dalimao.mytaxi.common.util.MyLoger;
-import com.google.gson.Gson;
-
-import java.lang.ref.SoftReference;
 
 /**
  * author: apple
