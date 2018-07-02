@@ -26,7 +26,7 @@ public class MyLoger {
             Log.d(TAG,msg);
         }
     }
-    public static void dd(String Tag,String msg){
+    public static void d(String Tag,String msg){
         if (IsDebug){
             Log.d(Tag,msg);
         }

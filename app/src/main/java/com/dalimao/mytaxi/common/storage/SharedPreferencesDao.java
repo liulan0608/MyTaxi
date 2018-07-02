@@ -52,7 +52,7 @@ public class SharedPreferencesDao {
                 return o;
             }
         }catch (Exception e){
-            MyLoger.dd(TAG,e.getMessage());
+            MyLoger.d(TAG,e.getMessage());
         }
         return  null;
     }

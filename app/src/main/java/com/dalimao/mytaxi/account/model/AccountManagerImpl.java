@@ -7,6 +7,7 @@ import com.dalimao.mytaxi.MyTaxiApplication;
 import com.dalimao.mytaxi.account.model.response.Login;
 import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
+import com.dalimao.mytaxi.common.databus.RxBus;
 import com.dalimao.mytaxi.common.http.IHttpClient;
 import com.dalimao.mytaxi.common.http.IRequest;
 import com.dalimao.mytaxi.common.http.IResponse;
@@ -17,6 +18,8 @@ import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
 import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.DevUtil;
 import com.google.gson.Gson;
+
+import rx.functions.Func1;
 
 /**
  * author: apple
@@ -55,9 +58,9 @@ public class AccountManagerImpl implements IAccountManager{
      */
     @Override
     public void fetchSMSCode(final String phone) {
-        new Thread(){
+        RxBus.getInstance().chainProcess(new Func1() {
             @Override
-            public void run() {
+            public Object call(Object o) {
                 String url = API.GET_SMS_CODE;
                 IRequest request = new BaseRequest(url);
                 request.setBody("phone",phone);
@@ -67,16 +70,18 @@ public class AccountManagerImpl implements IAccountManager{
                             .fromJson(response.getData()
                                     ,BaseBizResponse.class);
                     if (bizRes.getCode() == BaseBizResponse.STATE_OK){
-                        handler.sendEmptyMessage(SMS_SEND_SUC);
+//                        handler.sendEmptyMessage(SMS_SEND_SUC);
                     }else{
                         handler.sendEmptyMessage(SMS_SEND_FAIL);
                     }
                 }else{
                     handler.sendEmptyMessage(SMS_SEND_FAIL);
                 }
+                return null;
             }
-        }.start();
-    }
+        });
+
+            }
 
     /**
      * 校验验证码
@@ -199,7 +204,6 @@ public class AccountManagerImpl implements IAccountManager{
                 }else {
                     handler.sendEmptyMessage(SERVER_FAIL);
                 }
-
             }
         }.start();
     }
