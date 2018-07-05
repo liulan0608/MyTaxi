@@ -1,14 +1,12 @@
 package com.dalimao.mytaxi.account.pressenter;
 
-import android.os.Handler;
-import android.os.Message;
-
 import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
+import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.account.view.ICreatePasswordDialogView;
+import com.dalimao.mytaxi.common.biz.BaseBizResponse;
+import com.dalimao.mytaxi.common.databus.RegisterBus;
 import com.dalimao.mytaxi.common.util.Global;
-
-import java.lang.ref.WeakReference;
 
 /**
  * author: apple
@@ -22,32 +20,29 @@ public class CreatePasswordDialogPresenterImpl implements ICreatePassordDialogPr
     public CreatePasswordDialogPresenterImpl(ICreatePasswordDialogView view) {
         this.view = view;
         this.manager = new AccountManagerImpl(Global.sharedPrefDao);
-        manager.setHandler(new MyHandler(this));
     }
-    public class MyHandler extends Handler{
-        WeakReference<CreatePasswordDialogPresenterImpl> createPswRef;
-        public MyHandler(CreatePasswordDialogPresenterImpl createPasswordDialogPresenter) {
-            createPswRef =new WeakReference<CreatePasswordDialogPresenterImpl>(createPasswordDialogPresenter);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            CreatePasswordDialogPresenterImpl presenter =createPswRef.get();
-            switch (msg.what){
-                case IAccountManager.REGISTER_SIUC:
-                    presenter.view.showRegisterSuc();
-                    break;
-                case IAccountManager.LOGIN_SUC:
-                    presenter.view.showLoginSuc();
-                    break;
-                case IAccountManager.PASSWORD_ERROR:
-                    presenter.view.showError(IAccountManager.PASSWORD_ERROR,"");
+    @RegisterBus
+    public void onRegisterResponse(BaseBizResponse response){
+        switch (response.getCode()){
+            case IAccountManager.REGISTER_SIUC:
+                    view.showRegisterSuc();
                     break;
                 case IAccountManager.SERVER_FAIL:
-                    presenter.view.showError(IAccountManager.SERVER_FAIL,"");
+                    view.showError(IAccountManager.SERVER_FAIL,"");
                     break;
-            }
         }
+    }
+    @RegisterBus
+    public void onLoginResponse(LoginResponse response){
+        switch (response.getCode()){
+            case IAccountManager.LOGIN_SUC:
+                view.showLoginSuc();
+                break;
+            case IAccountManager.SERVER_FAIL:
+                view.showError(IAccountManager.SERVER_FAIL,"");
+                break;
+        }
+
     }
     @Override
     public void checkPw(String pw, String pw1) {

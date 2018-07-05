@@ -47,11 +47,6 @@ public class AccountManagerImpl implements IAccountManager{
         mContext = MyTaxiApplication.getInstance();
     }
 
-    @Override
-    public void setHandler(Handler handler) {
-        this.handler = handler;
-    }
-
     /**
      * 获取验证码
      * @param phone
@@ -65,19 +60,20 @@ public class AccountManagerImpl implements IAccountManager{
                 IRequest request = new BaseRequest(url);
                 request.setBody("phone",phone);
                 IResponse response = httpClient.get(request,false);
+                BaseBizResponse bizREs = new BaseBizResponse();
                 if (response.getCode() == BaseResponse.STATE_OK){
-                    BaseBizResponse bizRes = new Gson()
+                    bizREs = new Gson()
                             .fromJson(response.getData()
                                     ,BaseBizResponse.class);
-                    if (bizRes.getCode() == BaseBizResponse.STATE_OK){
-//                        handler.sendEmptyMessage(SMS_SEND_SUC);
+                    if (bizREs.getCode() == BaseBizResponse.STATE_OK){
+                        bizREs.setCode(SMS_SEND_SUC);
                     }else{
-                        handler.sendEmptyMessage(SMS_SEND_FAIL);
+                        bizREs.setCode(SMS_SEND_FAIL);
                     }
                 }else{
-                    handler.sendEmptyMessage(SMS_SEND_FAIL);
+                    bizREs.setCode(SMS_SEND_FAIL);
                 }
-                return null;
+                return bizREs;
             }
         });
 
@@ -90,28 +86,30 @@ public class AccountManagerImpl implements IAccountManager{
      */
     @Override
     public void checkSmsCode(final String phone, final String smsCode) {
-        new Thread(){
+        RxBus.getInstance().chainProcess(new Func1() {
             @Override
-            public void run() {
+            public Object call(Object o) {
                 String url = API.CHECK_SMS_CODE;
                 IRequest request = new BaseRequest(url);
                 request.setBody("phone",phone);
                 request.setBody("code",smsCode);
                 IResponse response = httpClient.get(request,false);
+                BaseBizResponse bizREs = new BaseBizResponse();
                 if (response.getCode() == BaseResponse.STATE_OK){
-                    BaseBizResponse bizRes = new Gson()
+                    bizREs = new Gson()
                             .fromJson(response.getData()
                                     ,BaseBizResponse.class);
-                    if (bizRes.getCode() == BaseBizResponse.STATE_OK){
-                        handler.sendEmptyMessage(SMS_CHECK_SUC);
+                    if (bizREs.getCode() == BaseBizResponse.STATE_OK){
+                        bizREs.setCode(SMS_CHECK_SUC);
                     }else{
-                        handler.sendEmptyMessage(SMS_CHECK_FAIL);
+                        bizREs.setCode(SMS_CHECK_FAIL);
                     }
                 }else{
-                    handler.sendEmptyMessage(SMS_CHECK_FAIL);
-                }
+                    bizREs.setCode(SMS_CHECK_FAIL);
             }
-        }.start();
+                return bizREs;
+            }
+        });
     }
 
     /**
@@ -120,27 +118,31 @@ public class AccountManagerImpl implements IAccountManager{
      */
     @Override
     public void checkUserExist(final String phone) {
-        new Thread(){
+        RxBus.getInstance().chainProcess(new Func1() {
             @Override
-            public void run() {
+            public Object call(Object o) {
+
+
                 String url = API.CHECK_USER_EXIST;
                 IRequest request = new BaseRequest(url);
                 request.setBody("phone",phone);
                 IResponse response = httpClient.get(request,false);
+                BaseBizResponse bizREs = new BaseBizResponse();
                 if (response.getCode() == BaseResponse.STATE_OK){
-                    BaseBizResponse bizRes = new Gson()
+                    bizREs = new Gson()
                             .fromJson(response.getData()
                                     ,BaseBizResponse.class);
-                    if (bizRes.getCode() == BaseBizResponse.STATE_USER_EXIST){
-                        handler.sendEmptyMessage(USER_EXIST);
-                    }else if (bizRes.getCode() == BaseBizResponse.STATE_USER_NOT_EXIT){
-                        handler.sendEmptyMessage(USER_NOT_EXIST);
+                    if (bizREs.getCode() == BaseBizResponse.STATE_USER_EXIST){
+                        bizREs.setCode(USER_EXIST);
+                    }else if (bizREs.getCode() == BaseBizResponse.STATE_USER_NOT_EXIT){
+                        bizREs.setCode(USER_NOT_EXIST);
                     }
                 }else{
-                    handler.sendEmptyMessage(SERVER_FAIL);
+                    bizREs.setCode(SERVER_FAIL);
                 }
+                return bizREs;
             }
-        }.start();
+        });
     }
 
     /**
@@ -150,30 +152,30 @@ public class AccountManagerImpl implements IAccountManager{
      */
     @Override
     public void register(final String phone, final String password) {
-        new Thread(){
-            @Override
-            public void run() {
+       RxBus.getInstance().chainProcess(new Func1() {
+           @Override
+           public Object call(Object o) {
                 String url= API.REGISTER;
                 IRequest request = new BaseRequest(url);
                 request.setBody("phone",phone);
                 request.setBody("password",password);
                 request.setBody("uid", DevUtil.UUID(mContext));
                 IResponse response = httpClient.post(request,false);
+               BaseBizResponse bizREs = new BaseBizResponse();
                 if (response.getCode() == BaseResponse.STATE_OK){
-                    BaseBizResponse bizREs = new Gson().fromJson(response.getData(),BaseBizResponse.class);
+                     bizREs = new Gson().fromJson(response.getData(),BaseBizResponse.class);
                     if (bizREs.getCode() == BaseBizResponse.STATE_OK){
-                        handler.sendEmptyMessage(REGISTER_SIUC);
+                        bizREs.setCode(REGISTER_SIUC);
                     }else {
-                        handler.sendEmptyMessage(SERVER_FAIL);
+                        bizREs.setCode(SERVER_FAIL);
                     }
                 }else {
-                    handler.sendEmptyMessage(SERVER_FAIL);
+                    bizREs.setCode(SERVER_FAIL);
                 }
-
-            }
-        }.start();
+               return bizREs;
+           }
+       });
     }
-
     /**
      * 账号密码登录
      * @param phone
@@ -181,79 +183,82 @@ public class AccountManagerImpl implements IAccountManager{
      */
     @Override
     public void login(final String phone, final String password) {
-        new Thread(){
+        RxBus.getInstance().chainProcess(new Func1() {
             @Override
-            public void run() {
+            public Object call(Object o) {
                 String url= API.LOGIN_PHONE;
                 IRequest request = new BaseRequest(url);
-                request.setBody("phone",phone);
-                request.setBody("password",password);
-                IResponse response = httpClient.post(request,false);
-                if (response.getCode() == BaseResponse.STATE_OK){
-                    LoginResponse loginRes = new Gson().fromJson(response.getData(),LoginResponse.class);
-                    if (loginRes.getCode() == BaseBizResponse.STATE_OK){
-                        //保存登陆信息
-                        Login login = loginRes.getData();
-                        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance()
-                                ,SharedPreferencesDao.FILE_ACCOUNT);
-                        dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
-                        handler.sendEmptyMessage(LOGIN_SUC);
-                    }else if (loginRes.getCode() == BaseBizResponse.STATE_PW_ERROR){
-                        handler.sendEmptyMessage(PASSWORD_ERROR);
-                    }
-                }else {
-                    handler.sendEmptyMessage(SERVER_FAIL);
+                    request.setBody("phone",phone);
+                    request.setBody("password",password);
+                    IResponse response = httpClient.post(request,false);
+                    LoginResponse bizRes = new LoginResponse();
+                    if (response.getCode() == BaseResponse.STATE_OK){
+                        bizRes = new Gson().fromJson(response.getData(),LoginResponse.class);
+                        if (bizRes.getCode() == BaseBizResponse.STATE_OK){
+                            //保存登陆信息
+                            Login login = bizRes.getData();
+                            SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance()
+                                    ,SharedPreferencesDao.FILE_ACCOUNT);
+                            dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
+                            bizRes.setCode(LOGIN_SUC);
+                        }else if (bizRes.getCode() == BaseBizResponse.STATE_PW_ERROR){
+                            bizRes.setCode(PASSWORD_ERROR);
+                        }
+                    }else {
+                    bizRes.setCode(SERVER_FAIL);
                 }
+                return bizRes;
             }
-        }.start();
+        });
     }
-
     /**
      * token 登录
      */
     @Override
     public void loginByToken() {
-        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance(),SharedPreferencesDao.FILE_ACCOUNT);
+        // 请求网络，完成自动登陆
+        RxBus.getInstance().chainProcess(new Func1() {
+            @Override
+            public Object call(Object o) {
+        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance(),
+                SharedPreferencesDao.FILE_ACCOUNT);
         final Login account = (Login) dao.get(SharedPreferencesDao.KEY_ACCOUNT,Login.class);
         //登陆是否过期
         boolean tokenValid = false;
-
         // 检查 token 是否过期
         if (account!=null){
             if (account.getExpired() > System.currentTimeMillis()){
                 tokenValid = true;
             }
         }
+        LoginResponse loginRes = new LoginResponse();
         if (!tokenValid){
-           handler.sendEmptyMessage(TOKEN_INVALID);
+            loginRes.setCode(TOKEN_INVALID);
         }else{
             final String token =account.getToken();
-            // 请求网络，完成自动登陆
-            new Thread(){
-                @Override
-                public void run() {
                     String url= API.LOGIN_TOKEN;
                     IRequest request = new BaseRequest(url);
                     request.setBody("token",account.getToken());
                     IResponse response = httpClient.post(request,false);
                     if (response.getCode() == BaseResponse.STATE_OK){
-                        LoginResponse loginRes = new Gson().fromJson(response.getData(),LoginResponse.class);
+                        loginRes = new Gson().fromJson(response.getData(),LoginResponse.class);
                         if (loginRes.getCode() == BaseBizResponse.STATE_OK){
                             //保存登陆信息
                             Login login = loginRes.getData();
                             // TODO: 2018/5/23 加密存储 登录信息比较敏感
-                            SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance()
-                                    ,SharedPreferencesDao.FILE_ACCOUNT);
                             dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
-                            handler.sendEmptyMessage(LOGIN_SUC);
+                            loginRes.setCode(LOGIN_SUC);
                         }else if (loginRes.getCode() == BaseBizResponse.STATE_TOKEN_INVALID){
-                           handler.sendEmptyMessage(TOKEN_INVALID);
+                            loginRes.setCode(TOKEN_INVALID);
                         }
                     }else {
-                        handler.sendEmptyMessage(SERVER_FAIL);
+                        loginRes.setCode(SERVER_FAIL);
                     }
-                }
-            }.start();
+
         }
+                return loginRes;
+            }
+        });
     }
+
 }

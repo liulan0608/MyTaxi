@@ -66,7 +66,7 @@ public class RxBus {
                     public void call(Object data) {
                         MyLoger.d(TAG,"chainProcess start");
                         for (Object s: subscribers)
-                            //数据发送到注册的 IDataBusSubscriber
+                            //数据发送到注册的 Subscriber
                             callMethodAnnotiation(s,data);
                       }
                 });

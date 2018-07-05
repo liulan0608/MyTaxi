@@ -14,6 +14,7 @@ import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.pressenter.ILoginDialogPresenter;
 import com.dalimao.mytaxi.account.pressenter.LoginDialogPresenterImpl;
+import com.dalimao.mytaxi.common.databus.RxBus;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
 /**
@@ -52,10 +53,12 @@ public class LoginDialog extends Dialog implements ILoginDialogView{
     public LoginDialog(Context context,String phone) {
         this(context, R.style.Dialog);
         this.mPhone = phone;
+        presenter = new LoginDialogPresenterImpl(this);
     }
 
     public LoginDialog(Context context, int themeResId) {
         super(context, themeResId);
+
     }
 
     @Override
@@ -67,7 +70,15 @@ public class LoginDialog extends Dialog implements ILoginDialogView{
         mRoot = inflater.inflate(R.layout.dialog_login,null);
         setContentView(mRoot);
         initLinstener();
-        presenter = new LoginDialogPresenterImpl(this);
+// 注册 presenter
+        RxBus.getInstance().register(presenter);
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+         //注销presenter
+        RxBus.getInstance().unRegister(presenter);
     }
 
     private void initLinstener() {

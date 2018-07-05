@@ -32,7 +32,7 @@ public interface IAccountManager {
     //密码错误
     int PASSWORD_ERROR = -7;
 
-    void setHandler(Handler handler);
+//    void setHandler(Handler handler);
     /**
      * 下发验证码
      */

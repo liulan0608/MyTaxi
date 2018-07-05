@@ -14,6 +14,7 @@ import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.pressenter.ISmsCodeDialogPresenter;
 import com.dalimao.mytaxi.account.pressenter.SmsCodeDialogPresenterImpl;
+import com.dalimao.mytaxi.common.databus.RxBus;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
 /**
@@ -55,7 +56,6 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
     public SmsCodeDialog(Context context,String phone) {
         super(context);
         this.mPhone = phone;
-
         mPresenter = new SmsCodeDialogPresenterImpl(this);
     }
 
@@ -75,6 +75,7 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
         mErrorView.setVisibility(View.GONE);
         initLinstener();
         requestSendSmsCode();
+        RxBus.getInstance().register(mPresenter);
     }
 
     /**
@@ -189,4 +190,10 @@ public class SmsCodeDialog extends Dialog implements ISmsCodeDialogView{
                 dialog.show();
             }
         }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        RxBus.getInstance().unRegister(mPresenter);
+    }
 }

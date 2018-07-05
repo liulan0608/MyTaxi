@@ -16,6 +16,7 @@ import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.pressenter.CreatePasswordDialogPresenterImpl;
 import com.dalimao.mytaxi.account.pressenter.ICreatePassordDialogPresenter;
+import com.dalimao.mytaxi.common.databus.RxBus;
 
 /**
  * author: apple
@@ -59,7 +60,7 @@ public class CreatePasswordDialog extends Dialog implements ICreatePasswordDialo
         View root = inflater.inflate(R.layout.dialog_create_pw,null);
         setContentView(root);
         initViews();
-
+        RxBus.getInstance().register(passwordPresenter);
     }
 
     private void initViews() {
@@ -88,6 +89,7 @@ public class CreatePasswordDialog extends Dialog implements ICreatePasswordDialo
     @Override
     public void dismiss() {
         super.dismiss();
+        RxBus.getInstance().unRegister(passwordPresenter);
     }
     private void submit() {
          String pasword = ed_pw.getText().toString();
@@ -137,10 +139,6 @@ public class CreatePasswordDialog extends Dialog implements ICreatePasswordDialo
     public void showError(int Code, String msg) {
         tv_tips.setTextColor(getContext().getResources().getColor(R.color.error_red));
         switch (Code){
-            case IAccountManager.PASSWORD_ERROR:
-                tv_tips.setText("密码错误");
-
-                break;
             case IAccountManager.SERVER_FAIL:
                 tv_tips.setText("服务器繁忙");
                 break;
