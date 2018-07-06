@@ -15,8 +15,8 @@ import com.dalimao.mytaxi.common.http.api.API;
 import com.dalimao.mytaxi.common.http.impl.BaseRequest;
 import com.dalimao.mytaxi.common.http.impl.BaseResponse;
 import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
-import com.dalimao.mytaxi.common.storage.SharedPreferencesDao;
 import com.dalimao.mytaxi.common.util.DevUtil;
+import com.dalimao.mytaxi.common.util.SaveData_withPreferences;
 import com.google.gson.Gson;
 
 import rx.functions.Func1;
@@ -31,20 +31,16 @@ public class AccountManagerImpl implements IAccountManager{
     //网络请求库
     private IHttpClient httpClient;
     //数据存储
-    private SharedPreferencesDao sharedPreferencesDao;
+    private SaveData_withPreferences preferences;
     //发送消息 handler
     private Handler handler;
     //上下文
     private Context mContext;
 
-    public AccountManagerImpl(IHttpClient httpClient, SharedPreferencesDao sharedPreferencesDao) {
-        this.httpClient = httpClient;
-        this.sharedPreferencesDao = sharedPreferencesDao;
-        mContext = MyTaxiApplication.getInstance();
-    } public AccountManagerImpl( SharedPreferencesDao sharedPreferencesDao) {
+   public AccountManagerImpl() {
         this.httpClient = new OkHttpClientImpl();;
-        this.sharedPreferencesDao = sharedPreferencesDao;
         mContext = MyTaxiApplication.getInstance();
+        preferences = new SaveData_withPreferences(mContext);
     }
 
     /**
@@ -76,8 +72,7 @@ public class AccountManagerImpl implements IAccountManager{
                 return bizREs;
             }
         });
-
-            }
+    }
 
     /**
      * 校验验证码
@@ -121,8 +116,6 @@ public class AccountManagerImpl implements IAccountManager{
         RxBus.getInstance().chainProcess(new Func1() {
             @Override
             public Object call(Object o) {
-
-
                 String url = API.CHECK_USER_EXIST;
                 IRequest request = new BaseRequest(url);
                 request.setBody("phone",phone);
@@ -197,9 +190,7 @@ public class AccountManagerImpl implements IAccountManager{
                         if (bizRes.getCode() == BaseBizResponse.STATE_OK){
                             //保存登陆信息
                             Login login = bizRes.getData();
-                            SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance()
-                                    ,SharedPreferencesDao.FILE_ACCOUNT);
-                            dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
+                            preferences.saveDatas_object(SaveData_withPreferences.KEY_ACCOUNT,login);
                             bizRes.setCode(LOGIN_SUC);
                         }else if (bizRes.getCode() == BaseBizResponse.STATE_PW_ERROR){
                             bizRes.setCode(PASSWORD_ERROR);
@@ -220,9 +211,8 @@ public class AccountManagerImpl implements IAccountManager{
         RxBus.getInstance().chainProcess(new Func1() {
             @Override
             public Object call(Object o) {
-        SharedPreferencesDao dao = new SharedPreferencesDao(MyTaxiApplication.getInstance(),
-                SharedPreferencesDao.FILE_ACCOUNT);
-        final Login account = (Login) dao.get(SharedPreferencesDao.KEY_ACCOUNT,Login.class);
+
+         Login account = (Login) preferences.getData_object(SaveData_withPreferences.KEY_ACCOUNT,Login.class);
         //登陆是否过期
         boolean tokenValid = false;
         // 检查 token 是否过期
@@ -238,7 +228,7 @@ public class AccountManagerImpl implements IAccountManager{
             final String token =account.getToken();
                     String url= API.LOGIN_TOKEN;
                     IRequest request = new BaseRequest(url);
-                    request.setBody("token",account.getToken());
+                    request.setBody("token",token);
                     IResponse response = httpClient.post(request,false);
                     if (response.getCode() == BaseResponse.STATE_OK){
                         loginRes = new Gson().fromJson(response.getData(),LoginResponse.class);
@@ -246,7 +236,7 @@ public class AccountManagerImpl implements IAccountManager{
                             //保存登陆信息
                             Login login = loginRes.getData();
                             // TODO: 2018/5/23 加密存储 登录信息比较敏感
-                            dao.save(SharedPreferencesDao.KEY_ACCOUNT,login);
+                            preferences.saveDatas_object(SaveData_withPreferences.KEY_ACCOUNT,login);
                             loginRes.setCode(LOGIN_SUC);
                         }else if (loginRes.getCode() == BaseBizResponse.STATE_TOKEN_INVALID){
                             loginRes.setCode(TOKEN_INVALID);

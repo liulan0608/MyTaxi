@@ -5,7 +5,7 @@ import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.account.view.ILoginDialogView;
 import com.dalimao.mytaxi.common.databus.RegisterBus;
-import com.dalimao.mytaxi.common.util.Global;
+
 /**
  * author: apple
  * created on: 2018/6/26 下午6:10
@@ -17,7 +17,7 @@ public class LoginDialogPresenterImpl implements ILoginDialogPresenter {
 
     public LoginDialogPresenterImpl(ILoginDialogView view) {
         this.view = view;
-        manager = new AccountManagerImpl(Global.sharedPrefDao);
+        manager = new AccountManagerImpl();
     }
 
     @Override

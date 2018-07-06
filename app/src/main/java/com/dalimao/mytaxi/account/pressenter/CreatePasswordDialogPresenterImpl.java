@@ -6,7 +6,6 @@ import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.account.view.ICreatePasswordDialogView;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.databus.RegisterBus;
-import com.dalimao.mytaxi.common.util.Global;
 
 /**
  * author: apple
@@ -19,7 +18,7 @@ public class CreatePasswordDialogPresenterImpl implements ICreatePassordDialogPr
 
     public CreatePasswordDialogPresenterImpl(ICreatePasswordDialogView view) {
         this.view = view;
-        this.manager = new AccountManagerImpl(Global.sharedPrefDao);
+        this.manager = new AccountManagerImpl();
     }
     @RegisterBus
     public void onRegisterResponse(BaseBizResponse response){

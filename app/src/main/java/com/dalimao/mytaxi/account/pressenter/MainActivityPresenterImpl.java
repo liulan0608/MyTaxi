@@ -4,7 +4,6 @@ import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.common.databus.RegisterBus;
-import com.dalimao.mytaxi.common.util.Global;
 import com.dalimao.mytaxi.main.IMainAcitivityView;
 
 /**
@@ -17,7 +16,7 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
     IMainAcitivityView view;
     public MainActivityPresenterImpl(IMainAcitivityView view) {
         this.view = view;
-        manager = new AccountManagerImpl(Global.sharedPrefDao);
+        manager = new AccountManagerImpl();
     }
 
 

@@ -1,11 +1,13 @@
 package com.dalimao.mytaxi.account.model.response;
 
+import java.io.Serializable;
+
 /**
  * author: apple
  * created on: 2018/5/23 下午12:02
  * description:
  */
-public class Login {
+public class Login implements Serializable{
     private String uid;
     private long expired;
     private String account;

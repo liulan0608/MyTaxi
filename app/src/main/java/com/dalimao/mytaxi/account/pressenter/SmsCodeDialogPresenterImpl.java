@@ -5,7 +5,6 @@ import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.view.ISmsCodeDialogView;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.databus.RegisterBus;
-import com.dalimao.mytaxi.common.util.Global;
 
 /**
  * author: apple
@@ -46,7 +45,7 @@ public class SmsCodeDialogPresenterImpl implements ISmsCodeDialogPresenter{
 
     public SmsCodeDialogPresenterImpl(ISmsCodeDialogView view) {
         this.view = view;
-        this.accountManager = new AccountManagerImpl(Global.sharedPrefDao);
+        this.accountManager = new AccountManagerImpl();
     }
 
     /**
