@@ -39,9 +39,10 @@ import com.dalimao.mytaxi.map.SensorEventHelper;
  * 2 若用户没有登陆则登陆
  * 3 登陆之前先校验手机号
  * 4 token 有效使用 token 自动登录
- * //地图初始化
+ * -----地图初始化-----
  * 1.地图接入
- * 2.
+ * 2.定位自己的位置，显示蓝点
+ * 3.使用marker标记当前位置和方向
  */
 public class MainActivity extends AppCompatActivity implements IMainAcitivityView ,LocationSource,
         AMapLocationListener {
@@ -141,10 +142,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     @Override
     protected void onResume() {
         super.onResume();
-        mMapView.onResume();
-        if (mSensorHelper != null) {
-            mSensorHelper.registerSensorListener();
-        }
+
     }
 
     /**
@@ -250,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     private void addMarker(LatLng latlng) {
         if (mLocMarker != null) {
             return;
-        }
+    }
         Bitmap bMap = BitmapFactory.decodeResource(this.getResources(),
                 R.mipmap.location_marker);
         BitmapDescriptor des = BitmapDescriptorFactory.fromBitmap(bMap);
