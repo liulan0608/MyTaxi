@@ -51,9 +51,6 @@ import com.dalimao.mytaxi.map.SensorEventHelper;
 public class MainActivity extends AppCompatActivity implements IMainAcitivityView{
     private IMainActivityPresenter presenter;
     private ILbsLayer mLbsLayer;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,13 +65,11 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
         mLbsLayer.setLocationChangeListener(new ILbsLayer.CommonLocationChangeListener() {
             @Override
             public void onLocationChanged(LocationInfo info) {
-
+                //位置改变
             }
-
             @Override
             public void onLocationFirst(LocationInfo info) {
                 //首次定位，添加当前位置的标记
-                mLbsLayer.addOrUpdateMarker(info,BitmapFactory.decodeResource(getResources(),R.mipmap.location_marker));
             }
         });
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.activity_main);

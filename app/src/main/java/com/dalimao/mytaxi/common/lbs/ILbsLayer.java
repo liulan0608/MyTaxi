@@ -23,10 +23,10 @@ public interface ILbsLayer {
      * 设置蓝点定位图标
      */
 //    void setLocationRes(int res);
-    /**
-     * 添加，更新标记点，包括位置、角度（通过 id 识别）
-     */
-    void addOrUpdateMarker(LocationInfo info, Bitmap bitmap);
+//    /**
+//     * 添加，更新标记点，包括位置、角度（通过 id 识别）
+//     */
+//    void addOrUpdateMarker(LocationInfo info, Bitmap bitmap);
 
     /**
      * 生存周期
