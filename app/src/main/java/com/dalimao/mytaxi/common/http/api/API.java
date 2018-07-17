@@ -22,6 +22,7 @@ public class API {
     public static  final String LOGIN_TOKEN = Config.getDomain()+"/f34e28da5816433d/login";
     //司机位置变化
     public static  final String DRIVER_POSITION_CHANGE = Config.getDomain()+"";
+    public static  final String GET_NEARBY_DRIVER = Config.getDomain()+"/f34e28da5816433d/getNearDrivers?latitude=${latitude}&longitude=${longitude}";
 
 
     public static class Config{

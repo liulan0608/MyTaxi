@@ -1,4 +1,4 @@
-package com.dalimao.mytaxi.main;
+package com.dalimao.mytaxi.main.view;
 
 import com.dalimao.mytaxi.account.view.IDialogView;
 

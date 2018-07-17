@@ -3,7 +3,6 @@ package com.dalimao.mytaxi.common.http.impl;
 import com.dalimao.mytaxi.common.http.IHttpClient;
 import com.dalimao.mytaxi.common.http.IRequest;
 import com.dalimao.mytaxi.common.http.IResponse;
-import com.dalimao.mytaxi.common.http.api.API;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
 import java.io.IOException;
@@ -60,8 +59,8 @@ public class OkHttpClientImpl implements IHttpClient {
             Response response = client.newCall(okRequest).execute();
             commonResponse.setCode(response.code());
             String body=response.body().string();
-            MyLoger.d("response:",body);
             commonResponse.setData(body);
+            MyLoger.d("response:",commonResponse.toString());
         } catch (IOException e) {
             e.printStackTrace();
             commonResponse.setCode(commonResponse.STATE_UNKNOWN);

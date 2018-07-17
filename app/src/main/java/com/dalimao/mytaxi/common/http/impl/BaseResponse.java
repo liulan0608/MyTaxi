@@ -1,6 +1,5 @@
 package com.dalimao.mytaxi.common.http.impl;
 
-import com.dalimao.mytaxi.common.http.IRequest;
 import com.dalimao.mytaxi.common.http.IResponse;
 
 /**
@@ -12,8 +11,10 @@ public class BaseResponse implements IResponse{
     public static final int STATE_OK = 200;
     //状态吗
     private int code;
+    private String msg;
     //响应数据
     private String data;
+
 
     public void setCode(int code) {
         this.code = code;
@@ -30,5 +31,18 @@ public class BaseResponse implements IResponse{
     @Override
     public String getData() {
         return data;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    @Override
+    public String toString() {
+        return "{code:"+getCode()+",msg:"+getMsg()+",data:"+getData()+"}";
     }
 }

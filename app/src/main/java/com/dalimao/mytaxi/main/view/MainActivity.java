@@ -1,39 +1,19 @@
-package com.dalimao.mytaxi.main;
+package com.dalimao.mytaxi.main.view;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ViewGroup;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.LocationSource;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.model.BitmapDescriptor;
-import com.amap.api.maps2d.model.BitmapDescriptorFactory;
-import com.amap.api.maps2d.model.Circle;
-import com.amap.api.maps2d.model.CircleOptions;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.Marker;
-import com.amap.api.maps2d.model.MarkerOptions;
 import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.account.model.IAccountManager;
-import com.dalimao.mytaxi.account.pressenter.IMainActivityPresenter;
-import com.dalimao.mytaxi.account.pressenter.MainActivityPresenterImpl;
+import com.dalimao.mytaxi.main.presenter.IMainActivityPresenter;
+import com.dalimao.mytaxi.main.presenter.MainActivityPresenterImpl;
 import com.dalimao.mytaxi.account.view.PhoneInputDialog;
 import com.dalimao.mytaxi.common.databus.RxBus;
 import com.dalimao.mytaxi.common.lbs.GaodeLbsYayerImpl;
 import com.dalimao.mytaxi.common.lbs.ILbsLayer;
 import com.dalimao.mytaxi.common.lbs.LocationInfo;
 import com.dalimao.mytaxi.common.util.MyLoger;
-import com.dalimao.mytaxi.map.SensorEventHelper;
 
 /**
  * author: apple
@@ -47,8 +27,12 @@ import com.dalimao.mytaxi.map.SensorEventHelper;
  * 1.地图接入
  * 2.定位自己的位置，显示蓝点
  * 3.使用marker标记当前位置和方向
+ * 4.地图的封装
+ *
+ * ----司机-----
+ * 1、获取附近的司机
  */
-public class MainActivity extends AppCompatActivity implements IMainAcitivityView{
+public class MainActivity extends AppCompatActivity implements IMainAcitivityView {
     private IMainActivityPresenter presenter;
     private ILbsLayer mLbsLayer;
     @Override
@@ -56,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        presenter = new MainActivityPresenterImpl(this);
-        presenter.requestLoginByToken();
+//        presenter.requestLoginByToken();
         RxBus.getInstance().register(presenter);
 
         //地图服务
@@ -70,10 +54,20 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
             @Override
             public void onLocationFirst(LocationInfo info) {
                 //首次定位，添加当前位置的标记
+                getNearDrivers(info.getLatitude(),info.getLongitude());
             }
         });
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.activity_main);
         mapViewContainer.addView(mLbsLayer.getMapView());
+    }
+
+    /**
+     * 获取附近的司机
+     * @param latitude
+     * @param longitude
+     */
+    private void getNearDrivers(double latitude, double longitude) {
+        presenter.fetchNearDrivers(latitude,longitude);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.dalimao.mytaxi.map;
+package com.dalimao.mytaxi.common.lbs;
 
 import android.content.Context;
 import android.hardware.Sensor;

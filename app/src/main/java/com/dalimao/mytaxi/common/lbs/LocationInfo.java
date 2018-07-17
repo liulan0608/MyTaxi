@@ -6,7 +6,7 @@ package com.dalimao.mytaxi.common.lbs;
  * description:
  */
 public class LocationInfo {
-    private int id;
+    private String  key;
     private String name;
     private double latitude;
     private double longitude;
@@ -17,12 +17,12 @@ public class LocationInfo {
         this.longitude = longitude;
     }
 
-    public int getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -60,7 +60,7 @@ public class LocationInfo {
     @Override
     public String toString() {
         return "LocationInfo{" +
-                "id=" + id +
+                "key=" + getKey() +
                 ", name='" + name + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +

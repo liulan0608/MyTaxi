@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,10 +22,8 @@ import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.MyLocationStyle;
 import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.common.util.MyLoger;
-import com.dalimao.mytaxi.map.SensorEventHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +43,7 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
 
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
-    private static final int KEY_MY_MARKERE = 1000;
+    private static final String KEY_MY_MARKERE = "1000";
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
     private boolean mFirstFix = false;
@@ -54,7 +51,7 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
     private SensorEventHelper mSensorHelper;
     private Circle mCircle;
     //管理地图标记集合
-    private Map<Integer,Marker> markerMap = new HashMap<>();
+    private Map<String,Marker> markerMap = new HashMap<>();
 
     private LocationSource locationSource;
 
@@ -92,7 +89,7 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
                                 LatLng location = new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude());
                                 LocationInfo info = new LocationInfo(amapLocation.getLatitude(), amapLocation.getLongitude());
                                 info.setName(amapLocation.getPoiName());
-                                info.setId(KEY_MY_MARKERE);
+                                info.setKey(KEY_MY_MARKERE);
                                 info.setRotation(amapLocation.getAccuracy());
                                 if (!mFirstFix) {
                                     mFirstFix = true;

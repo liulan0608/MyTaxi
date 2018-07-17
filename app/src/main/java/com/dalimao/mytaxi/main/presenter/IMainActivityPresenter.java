@@ -1,4 +1,4 @@
-package com.dalimao.mytaxi.account.pressenter;
+package com.dalimao.mytaxi.main.presenter;
 
 /**
  * author: apple
@@ -7,4 +7,6 @@ package com.dalimao.mytaxi.account.pressenter;
  */
 public interface IMainActivityPresenter {
     void requestLoginByToken();
+
+    void fetchNearDrivers(double latitude, double longitude);
 }

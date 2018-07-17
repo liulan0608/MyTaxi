@@ -32,8 +32,6 @@ public class AccountManagerImpl implements IAccountManager{
     private IHttpClient httpClient;
     //数据存储
     private SaveData_withPreferences preferences;
-    //发送消息 handler
-    private Handler handler;
     //上下文
     private Context mContext;
 
