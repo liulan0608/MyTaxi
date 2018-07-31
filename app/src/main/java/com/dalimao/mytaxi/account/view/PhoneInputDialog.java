@@ -46,6 +46,12 @@ public class PhoneInputDialog extends Dialog {
         mButton = (Button) findViewById(R.id.btn_next);
         mButton.setEnabled(false);
         mPhone = (EditText) findViewById(R.id.phone);
+        findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         //手机号输入框监听手机号输入是否合法
         mPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -65,6 +71,7 @@ public class PhoneInputDialog extends Dialog {
 
             
         });
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

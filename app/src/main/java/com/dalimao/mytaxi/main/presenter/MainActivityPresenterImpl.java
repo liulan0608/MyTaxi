@@ -3,9 +3,11 @@ package com.dalimao.mytaxi.main.presenter;
 import com.dalimao.mytaxi.account.model.AccountManagerImpl;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.model.response.LoginResponse;
+import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.databus.RegisterBus;
 import com.dalimao.mytaxi.main.model.IMainManager;
 import com.dalimao.mytaxi.main.model.MainManagerImpl;
+import com.dalimao.mytaxi.main.model.response.NearByDriverResponse;
 import com.dalimao.mytaxi.main.view.IMainAcitivityView;
 
 /**
@@ -46,14 +48,26 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
      * @param response
      */
     @RegisterBus
-    public void responseLonginByToken(LoginResponse response){
-        switch (response.getCode()){
-            case  IAccountManager.TOKEN_INVALID:
-                view.showError(IAccountManager.TOKEN_INVALID,"");
+    public void responseLonginByToken(LoginResponse response) {
+        switch (response.getCode()) {
+            case IAccountManager.TOKEN_INVALID:
+                view.showError(IAccountManager.TOKEN_INVALID, "");
                 break;
             case IAccountManager.LOGIN_SUC:
                 view.showLoginSuc();
                 break;
+        }
+    }/**
+     * 获取附近司机返回结果
+     * @param response
+     */
+    @RegisterBus
+    public void responseNearDrivers(NearByDriverResponse response){
+        switch (response.getCode()){
+            case  BaseBizResponse.STATE_OK:
+                view.showNears(response.getData());
+                break;
+
     }
 
 }

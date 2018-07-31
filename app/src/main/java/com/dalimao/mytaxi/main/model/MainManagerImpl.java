@@ -15,6 +15,7 @@ import com.dalimao.mytaxi.common.lbs.LocationInfo;
 import com.dalimao.mytaxi.common.util.SaveData_withPreferences;
 import com.dalimao.mytaxi.main.model.response.NearByDriverResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import rx.functions.Func1;
 
@@ -50,10 +51,13 @@ public class MainManagerImpl implements IMainManager {
                 request.setBody("latitude",new Double(latitude).toString());
                 request.setBody("longitude",new Double(longitude).toString());
                 IResponse response = httpClient.get(request,false);
-                NearByDriverResponse nearByDriverResponse = new NearByDriverResponse();
                 if (response.getCode()== BaseResponse.STATE_OK){
-                    nearByDriverResponse= new Gson().fromJson(response.getData(),NearByDriverResponse.class);
-                    return nearByDriverResponse;
+                    try {
+                        NearByDriverResponse  nearByDriverResponse= new Gson().fromJson(response.getData(),NearByDriverResponse.class);
+                        return nearByDriverResponse;
+                    } catch (JsonSyntaxException e) {
+                        return  null;
+                    }
                 }else {
                    return  null;
                 }

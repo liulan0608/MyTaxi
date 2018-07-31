@@ -1,6 +1,7 @@
 package com.dalimao.mytaxi.splash;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -23,10 +24,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Drawable drawable = this.getDrawable(R.drawable.anim);
-
             final AnimatedVectorDrawable anim =
-                    (AnimatedVectorDrawable) drawable;
+                    (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.anim);
             final ImageView logo = (ImageView) findViewById(R.id.logo);
             logo.setImageResource(R.drawable.anim);
             anim.start();

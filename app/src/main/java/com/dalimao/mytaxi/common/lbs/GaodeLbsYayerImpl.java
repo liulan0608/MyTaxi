@@ -12,16 +12,19 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptor;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
+import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.Circle;
 import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.maps2d.model.MyLocationStyle;
 import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
@@ -33,185 +36,183 @@ import java.util.Map;
  * created on: 2018/7/9 下午5:48
  * description:
  */
-public class GaodeLbsYayerImpl implements  ILbsLayer{
+public class GaodeLbsYayerImpl implements  ILbsLayer{private static final String TAG = "GaodeLbsLayerImpl";
+    private static final String KEY_MY_MARKERE = "1000";
     private Context mContext;
-    private MapView mMapView;
-    private AMap aMap;//地图控制器对象，用来操作地图
-
-    private LocationSource.OnLocationChangedListener mListener;
-    private CommonLocationChangeListener mCommonLocationChangeListener;
-
+    //位置定位对象
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
-    private static final String KEY_MY_MARKERE = "1000";
-    private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
-    private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
-    private boolean mFirstFix = false;
-    private Marker mLocMarker;
+    // 地图视图对象
+    private MapView mapView;
+    // 地图管理对象
+    private AMap aMap;
+    // 地图位置变化回调对象
+    private LocationSource.OnLocationChangedListener mMapLocationChangeListener;
+    private boolean firstLocation = true;
     private SensorEventHelper mSensorHelper;
-    private Circle mCircle;
-    //管理地图标记集合
-    private Map<String,Marker> markerMap = new HashMap<>();
-
-    private LocationSource locationSource;
-
+    private CommonLocationChangeListener mLocationChangeListener;
+    private MyLocationStyle myLocationStyle;
+    // 管理地图标记集合
+    private Map<String, Marker> markerMap = new HashMap<>();
     public GaodeLbsYayerImpl(Context context) {
-        this.mContext = context;
-        //创建地图对象
-        mMapView = new MapView(context);
-        //获取地图管理器
-        aMap = mMapView.getMap();
-        //创建定位对象
+        // 创建地图对象
+        mapView = new MapView(context);
+        // 获取地图管理器
+        aMap = mapView.getMap();
+        // 创建定位对象
         mlocationClient = new AMapLocationClient(context);
         mLocationOption = new AMapLocationClientOption();
         //设置为高精度定位模式
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //设置定位参数
         mlocationClient.setLocationOption(mLocationOption);
-        //传感器对象
+
+        // 传感器对象
         mSensorHelper = new SensorEventHelper(context);
         mSensorHelper.registerSensorListener();
+        mContext = context;
+    }
 
-        locationSource = new LocationSource() {
+    @Override
+    public View getMapView() {
+        return mapView;
+    }
+
+    @Override
+    public void setLocationChangeListener(CommonLocationChangeListener locationChangeListener) {
+        mLocationChangeListener = locationChangeListener;
+    }
+
+    @Override
+    public void setLocationRes(int res) {
+        myLocationStyle = new MyLocationStyle();
+        myLocationStyle.myLocationIcon(BitmapDescriptorFactory
+                .fromResource(res));// 设置小蓝点的图标
+        myLocationStyle.strokeColor(Color.BLACK);// 设置圆形的边框颜色
+        myLocationStyle.radiusFillColor(Color.argb(100, 0, 0, 180));// 设置圆形的填充颜色
+        // myLocationStyle.anchor(int,int)//设置小蓝点的锚点
+        myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
+    }
+
+    @Override
+    public void addOrUpdateMarker(LocationInfo locationInfo, Bitmap bitmap) {
+        Marker storedMarker = markerMap.get(locationInfo.getKey());
+        LatLng latLng = new LatLng(locationInfo.getLatitude(),
+                locationInfo.getLongitude());
+        if (storedMarker != null) {
+            // 如果已经存在则更新角度、位置
+            storedMarker.setPosition(latLng);
+            storedMarker.setRotateAngle(locationInfo.getRotation());
+        } else {
+            // 如果不存在则创建
+            MarkerOptions options = new MarkerOptions();
+            BitmapDescriptor des = BitmapDescriptorFactory.fromBitmap(bitmap);
+            options.icon(des);
+            options.anchor(0.5f, 0.5f);
+            options.position(latLng);
+            Marker marker = aMap.addMarker(options);
+//            marker.setRotateAngle(R.attr.rotation);
+            markerMap.put(locationInfo.getKey(), marker);
+            if (KEY_MY_MARKERE.equals(locationInfo.getKey())) {
+                // 传感器控制我的位置标记的旋转角度
+                mSensorHelper.setCurrentMarker(marker);
+            }
+        }
+    }
+    @Override
+    public void onCreate(Bundle savedState) {
+        mapView.onCreate(savedState);
+        setUpMap();
+    }
+
+    private void setUpMap() {
+        if (myLocationStyle != null) {
+            aMap.setMyLocationStyle(myLocationStyle);
+        }
+
+        // 设置地图激活（加载监听）
+        aMap.setLocationSource(new LocationSource() {
             @Override
             public void activate(OnLocationChangedListener onLocationChangedListener) {
-                //激活定位
-                mListener = onLocationChangedListener;
-                mlocationClient.startLocation();
-                //设置定位监听
-                mlocationClient.setLocationListener(new AMapLocationListener() {
-                    @Override
-                    public void onLocationChanged(AMapLocation amapLocation) {
-                        if (mListener != null && amapLocation != null) {
-                            if (amapLocation != null
-                                    && amapLocation.getErrorCode() == 0) {
-
-                                LatLng location = new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude());
-                                LocationInfo info = new LocationInfo(amapLocation.getLatitude(), amapLocation.getLongitude());
-                                info.setName(amapLocation.getPoiName());
-                                info.setKey(KEY_MY_MARKERE);
-                                info.setRotation(amapLocation.getAccuracy());
-                                if (!mFirstFix) {
-                                    mFirstFix = true;
-                                    addCircle(location, amapLocation.getAccuracy());//添加定位精度圆
-                                    addMarker(location);//添加定位图标
-                                    mSensorHelper.setCurrentMarker(mLocMarker);//定位图标旋转
-                                    if (mCommonLocationChangeListener!=null){
-                                        mCommonLocationChangeListener.onLocationFirst(info);
-                                    }
-                                } else {
-                                    mCircle.setCenter(location);
-                                    mCircle.setRadius(amapLocation.getAccuracy());
-                                    mLocMarker.setPosition(location);
-                                    if (mCommonLocationChangeListener!=null){
-                                        mCommonLocationChangeListener.onLocationChanged(info);
-                                    }
-                                }
-                                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
-                            } else {
-                                String errText = "定位失败," + amapLocation.getErrorCode()+ ": " + amapLocation.getErrorInfo();
-                                MyLoger.d("AmapErr",errText);
-
-                            }
-                        }
-                    }
-                });
+                mMapLocationChangeListener = onLocationChangedListener;
+                MyLoger.d(TAG, "activate");
+                setUpLocation();
             }
+
             @Override
             public void deactivate() {
-                //停止定位
-                mListener = null;
                 if (mlocationClient != null) {
                     mlocationClient.stopLocation();
                     mlocationClient.onDestroy();
                 }
                 mlocationClient = null;
             }
-        };
+        });
+        // 设置默认定位按钮是否显示，这里先不想业务使用方开放
+        aMap.getUiSettings().setMyLocationButtonEnabled(true);
+        // 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false，这里先不想业务使用方开放
+        aMap.setMyLocationEnabled(true);
     }
 
-    @Override
-    public View getMapView() {
-        return mMapView;
-    }
+    public void setUpLocation() {
 
-    @Override
-    public void setLocationChangeListener(CommonLocationChangeListener listener) {
-    this.mCommonLocationChangeListener = listener;
-    }
+        //设置监听器
 
-    @Override
-    public void onCreate(Bundle state) {
-        mMapView.onCreate(state);
-        setUpMap();
-    }
-    /**
-     * 设置一些amap的属性
-     */
-    private void setUpMap() {
-        aMap.setLocationSource(locationSource);// 设置定位监听
-        aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
-        aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
-    }
-    @Override
-    public void onResume() {
-        mMapView.onResume();
-        if (mSensorHelper != null) {
-            mSensorHelper.registerSensorListener();
-        }
+        mlocationClient.setLocationListener(new AMapLocationListener() {
+            @Override
+            public void onLocationChanged(AMapLocation aMapLocation) {
+                // 定位变化位置
+                if (mMapLocationChangeListener != null) {
+                    // 地图已经激活，通知蓝点实时更新
+                    mMapLocationChangeListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
+                    LocationInfo locationInfo = new LocationInfo(aMapLocation.getLatitude(),
+                            aMapLocation.getLongitude());
+                    locationInfo.setName(aMapLocation.getPoiName());
+                    locationInfo.setKey(KEY_MY_MARKERE);
+                    if (firstLocation) {
+                        firstLocation = false;
+                        LatLng latLng = new LatLng(aMapLocation.getLatitude(),
+                                aMapLocation.getLongitude());
+
+                        CameraUpdate up = CameraUpdateFactory.newCameraPosition(new CameraPosition(
+                                latLng , 17, 30, 30));
+                        aMap.moveCamera(up);
+                        if (mLocationChangeListener != null) {
+
+                            mLocationChangeListener.onLocation(locationInfo);
+                        }
+
+                    }
+                    if (mLocationChangeListener != null) {
+
+                        mLocationChangeListener.onLocationChanged(locationInfo);
+                    }
+                }
+            }
+        });
+        mlocationClient.startLocation();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        mMapView.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+
     }
 
     @Override
+    public void onResume() {
+        mapView.onResume();
+//        setUpLocation();
+    }
+    @Override
     public void onPause() {
-        if (mSensorHelper != null) {
-            mSensorHelper.unRegisterSensorListener();
-            mSensorHelper.setCurrentMarker(null);
-            mSensorHelper = null;
-        }
-        mMapView.onPause();
-        locationSource.deactivate();
-        mFirstFix = false;
+        mapView.onPause();
+        mlocationClient.stopLocation();
     }
 
     @Override
     public void onDestroy() {
-        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
-        mMapView.onDestroy();
-        if(null != mlocationClient){
-            mlocationClient.onDestroy();
-        }
+        mapView.onDestroy();
+        mlocationClient.onDestroy();
     }
-
-    private void addCircle(LatLng latlng, double radius) {
-        CircleOptions options = new CircleOptions();
-        options.strokeWidth(1f);
-        options.fillColor(FILL_COLOR);
-        options.strokeColor(STROKE_COLOR);
-        options.center(latlng);
-        options.radius(radius);
-        mCircle = aMap.addCircle(options);
-    }
-
-    private void addMarker(LatLng latlng) {
-        if (mLocMarker != null) {
-            return;
-        }
-        Bitmap bMap = BitmapFactory.decodeResource(mContext.getResources(),
-                R.mipmap.location_marker);
-        BitmapDescriptor des = BitmapDescriptorFactory.fromBitmap(bMap);
-
-//    BitmapDescriptor des = BitmapDescriptorFactory.fromResource(R.drawable.navi_map_gps_locked);
-        MarkerOptions options = new MarkerOptions();
-        options.icon(des);
-        options.anchor(0.5f, 0.5f);
-        options.position(latlng);
-        mLocMarker = aMap.addMarker(options);
-        mLocMarker.setTitle("mylocation");
-    }
-
 }
