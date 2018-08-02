@@ -5,6 +5,7 @@ import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.model.response.LoginResponse;
 import com.dalimao.mytaxi.common.biz.BaseBizResponse;
 import com.dalimao.mytaxi.common.databus.RegisterBus;
+import com.dalimao.mytaxi.common.lbs.LocationInfo;
 import com.dalimao.mytaxi.main.model.IMainManager;
 import com.dalimao.mytaxi.main.model.MainManagerImpl;
 import com.dalimao.mytaxi.main.model.response.NearByDriverResponse;
@@ -41,6 +42,11 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
     @Override
     public void fetchNearDrivers(double latitude, double longitude) {
         mainManager.fetchNearDrivers(latitude,longitude);
+    }
+
+    @Override
+    public void updateLocationToServer(LocationInfo locationInfo) {
+        mainManager.updateLocationToServer(locationInfo);
     }
 
     /**

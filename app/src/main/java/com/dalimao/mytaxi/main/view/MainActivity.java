@@ -10,6 +10,7 @@ import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.account.model.IAccountManager;
 import com.dalimao.mytaxi.account.view.PhoneInputDialog;
 import com.dalimao.mytaxi.common.databus.RxBus;
+import com.dalimao.mytaxi.common.http.api.API;
 import com.dalimao.mytaxi.common.lbs.GaodeLbsYayerImpl;
 import com.dalimao.mytaxi.common.lbs.ILbsLayer;
 import com.dalimao.mytaxi.common.lbs.LocationInfo;
@@ -18,6 +19,10 @@ import com.dalimao.mytaxi.main.presenter.IMainActivityPresenter;
 import com.dalimao.mytaxi.main.presenter.MainActivityPresenterImpl;
 
 import java.util.List;
+
+import cn.bmob.push.BmobPush;
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobInstallation;
 
 /**
  * author: apple
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     private ILbsLayer mLbsLayer;
 
     private Bitmap mDriverBit;
+
+    private String mPushKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +72,32 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
                                 R.mipmap.location_marker));
                 //获取附近司机
                 getNearDrivers(locationInfo.getLatitude(),locationInfo.getLongitude());
+
+                //上报当前位置
+                updateLocationToServer(locationInfo);
             }
         });
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.activity_main);
         mapViewContainer.addView(mLbsLayer.getMapView());
+
+        //TODO 集成：1.4、初始化数据服务SDK、初始化设备信息并启动推送服务
+        // 初始化BmobSDK
+        Bmob.initialize(this, API.Config.getAppId());
+        // 使用推送服务时的初始化操作
+        BmobInstallation bmobInstallation = BmobInstallation.getCurrentInstallation(this);
+        bmobInstallation.save();
+        mPushKey = bmobInstallation.getInstallationId();
+        // 启动推送服务
+        BmobPush.startWork(this);
+    }
+
+    /**
+     * 上报当前位置
+     * @param locationInfo
+     */
+    private void updateLocationToServer(LocationInfo locationInfo) {
+        locationInfo.setKey(mPushKey);
+        presenter.updateLocationToServer(locationInfo);
     }
 
     /**
@@ -101,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     @Override
     public void showNears(List<LocationInfo> data) {
         if (mDriverBit == null || mDriverBit.isRecycled()){
-            mDriverBit = BitmapFactory.decodeResource(getResources(),R.drawable.car);
+            mDriverBit = BitmapFactory.decodeResource(getResources(),R.mipmap.car);
         }
         for (LocationInfo info : data){
             mLbsLayer.addOrUpdateMarker(info,mDriverBit);

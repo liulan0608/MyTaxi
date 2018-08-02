@@ -22,7 +22,10 @@ public class API {
     public static  final String LOGIN_TOKEN = Config.getDomain()+"/f34e28da5816433d/login";
     //司机位置变化
     public static  final String DRIVER_POSITION_CHANGE = Config.getDomain()+"";
+    //获取附近的司机
     public static  final String GET_NEARBY_DRIVER = Config.getDomain()+"/f34e28da5816433d/getNearDrivers?latitude=${latitude}&longitude=${longitude}";
+    //更新上报位置
+    public static  final String UPDATE_LOCATION = Config.getDomain()+"/f34e28da5816433d/updateUserLocation";
 
 
     public static class Config{
@@ -33,6 +36,8 @@ public class API {
         private static final String RELEASE_DOMAIN = "http://cloud.bmob.cn";
         private static final String RELEASE_APP_ID = "e90928398db0130b0d6d21da7bde357e";
         private static final String RELEASE_APP_KEY = "514d8f8a2371bdf1566033f6664a24d2";
+
+
 
         private static String appId = TEST_APP_ID;
         private static String appKey = TEST_APP_KEY;

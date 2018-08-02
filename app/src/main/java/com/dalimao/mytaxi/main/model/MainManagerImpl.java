@@ -12,6 +12,7 @@ import com.dalimao.mytaxi.common.http.impl.BaseRequest;
 import com.dalimao.mytaxi.common.http.impl.BaseResponse;
 import com.dalimao.mytaxi.common.http.impl.OkHttpClientImpl;
 import com.dalimao.mytaxi.common.lbs.LocationInfo;
+import com.dalimao.mytaxi.common.util.MyLoger;
 import com.dalimao.mytaxi.common.util.SaveData_withPreferences;
 import com.dalimao.mytaxi.main.model.response.NearByDriverResponse;
 import com.google.gson.Gson;
@@ -61,6 +62,34 @@ public class MainManagerImpl implements IMainManager {
                 }else {
                    return  null;
                 }
+            }
+        });
+    }
+
+    /**
+     * 上报当前位置
+     * @param locationInfo
+     */
+    @Override
+    public void updateLocationToServer(final LocationInfo locationInfo) {
+        RxBus.getInstance().chainProcess(new Func1() {
+            @Override
+            public Object call(Object o) {
+                IRequest request = new BaseRequest(API.UPDATE_LOCATION);
+                request.setBody("latitude",
+                        new Double(locationInfo.getLatitude()).toString());
+                request.setBody("longitude",
+                        new Double(locationInfo.getLongitude()).toString());
+                request.setBody("rotation",
+                        new Float(locationInfo.getRotation()).toString());
+                request.setBody("key", locationInfo.getKey());
+                IResponse response = httpClient.post(request, false);
+                if (response.getCode() == BaseResponse.STATE_OK) {
+                    MyLoger.d("mainManagerImpl", "位置上报成功");
+                } else {
+                    MyLoger.d("mainManagerImpl", "位置上报失败");
+                }
+            return null;
             }
         });
     }

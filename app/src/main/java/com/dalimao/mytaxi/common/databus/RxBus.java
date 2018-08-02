@@ -65,6 +65,9 @@ public class RxBus {
                     @Override
                     public void call(Object data) {
                         MyLoger.d(TAG,"chainProcess start");
+                        if (data==null){
+                            return;
+                        }
                         for (Object s: subscribers)
                             //数据发送到注册的 Subscriber
                             callMethodAnnotiation(s,data);
