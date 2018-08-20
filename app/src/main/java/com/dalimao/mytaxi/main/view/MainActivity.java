@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        presenter = new MainActivityPresenterImpl(this);
-        presenter.requestLoginByToken();
         RxBus.getInstance().register(presenter);
+        presenter.requestLoginByToken();
         //地图服务
         mLbsLayer = new GaodeLbsYayerImpl(this);
         mLbsLayer.onCreate(savedInstanceState);

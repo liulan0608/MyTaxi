@@ -42,7 +42,6 @@
         </activity>
 <activity android:name=".main.view.MainActivity"/>
 
-        <!--TODO 集成：1.2、添加推送所需要的服务和广播-->
         <service
             android:label="PushService"
             android:name="cn.bmob.push.lib.service.PushService"
@@ -70,8 +69,8 @@
             </intent-filter>
         </receiver>
 
-        <!-- 第3步中创建的消息接收器，在这里进行注册 -->
-        <receiver android:name=".common.receiver.MyPushMessageReceiver">
+        <!-- 第四部中创建的消息接收器，在这里进行注册 -->
+        <receiver android:name=".common.push.PushReceiver">
             <intent-filter >
                 <action android:name="cn.bmob.push.action.MESSAGE"/>
             </intent-filter>
