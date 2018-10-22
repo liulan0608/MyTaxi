@@ -77,4 +77,11 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
     }
 
 }
+
+/**
+ *
+ */@RegisterBus
+    public void onLocationInfo(LocationInfo locationInfo){
+    view.showLocitionChange(locationInfo);
+}
 }

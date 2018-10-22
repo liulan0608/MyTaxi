@@ -21,4 +21,6 @@ public interface IMainAcitivityView extends IDialogView {
      * @param data
      */
     void showNears(List<LocationInfo> data);
+
+    void showLocitionChange(LocationInfo locationInfo);
 }

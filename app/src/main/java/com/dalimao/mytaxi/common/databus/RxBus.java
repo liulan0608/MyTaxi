@@ -68,9 +68,7 @@ public class RxBus {
                         if (data==null){
                             return;
                         }
-                        for (Object s: subscribers)
-                            //数据发送到注册的 Subscriber
-                            callMethodAnnotiation(s,data);
+                        send(data);
                       }
                 });
     }
@@ -89,11 +87,11 @@ public class RxBus {
                 if(methodArray[i].isAnnotationPresent(RegisterBus.class)){
                     //被@RegisterBus修饰的方法
                     Class paramType = methodArray[i].getParameterTypes()[0];
-                    if (data.getClass().getName().equals(paramType.getName())){
-                        //参数类型和data 一样，调用此方法
-                        methodArray[i].invoke(target,new Object[]{data});
-                    }
+                if (data.getClass().getName().equals(paramType.getName())){
+                    //参数类型和data 一样，调用此方法
+                    methodArray[i].invoke(target,new Object[]{data});
                 }
+            }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
@@ -102,5 +100,13 @@ public class RxBus {
         }
     }
 
-
+    /**
+     * 发送数据
+     * @param data
+     */
+    public void send(Object data) {
+        for (Object s: subscribers)
+            //数据发送到注册的 Subscriber
+            callMethodAnnotiation(s,data);
+    }
 }

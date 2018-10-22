@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       presenter = new MainActivityPresenterImpl(this);
+        presenter = new MainActivityPresenterImpl(this);
         presenter.requestLoginByToken();
         RxBus.getInstance().register(presenter);
         //地图服务
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
             @Override
             public void onLocationChanged(LocationInfo info) {
                 //位置改变
+
             }
 
             @Override
@@ -129,12 +130,18 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
      */
     @Override
     public void showNears(List<LocationInfo> data) {
+
+        for (LocationInfo info : data){
+            showLocitionChange(info);
+        }
+    }
+
+    @Override
+    public void showLocitionChange(LocationInfo locationInfo) {
         if (mDriverBit == null || mDriverBit.isRecycled()){
             mDriverBit = BitmapFactory.decodeResource(getResources(),R.mipmap.car);
         }
-        for (LocationInfo info : data){
-            mLbsLayer.addOrUpdateMarker(info,mDriverBit);
-        }
+        mLbsLayer.addOrUpdateMarker(locationInfo,mDriverBit);
     }
 
     @Override
