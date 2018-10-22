@@ -2,9 +2,9 @@ package com.dalimao.mytaxi.common.lbs;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.amap.api.location.AMapLocation;
@@ -19,16 +19,19 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptor;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.CameraPosition;
-import com.amap.api.maps2d.model.Circle;
-import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
-import com.dalimao.mytaxi.R;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.help.Inputtips;
+import com.amap.api.services.help.InputtipsQuery;
+import com.amap.api.services.help.Tip;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +39,8 @@ import java.util.Map;
  * created on: 2018/7/9 下午5:48
  * description:
  */
-public class GaodeLbsYayerImpl implements  ILbsLayer{private static final String TAG = "GaodeLbsLayerImpl";
+public class GaodeLbsYayerImpl implements  ILbsLayer{
+    private static final String TAG = "GaodeLbsLayerImpl";
     private static final String KEY_MY_MARKERE = "1000";
     private Context mContext;
     //位置定位对象
@@ -54,6 +58,8 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{private static final String
     private MyLocationStyle myLocationStyle;
     // 管理地图标记集合
     private Map<String, Marker> markerMap = new HashMap<>();
+
+    private String mCity;
     public GaodeLbsYayerImpl(Context context) {
         // 创建地图对象
         mapView = new MapView(context);
@@ -163,6 +169,8 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{private static final String
             public void onLocationChanged(AMapLocation aMapLocation) {
                 // 定位变化位置
                 if (mMapLocationChangeListener != null) {
+                    //当前城市
+                    mCity = aMapLocation.getCity();
                     // 地图已经激活，通知蓝点实时更新
                     mMapLocationChangeListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
                     LocationInfo locationInfo = new LocationInfo(aMapLocation.getLatitude(),
@@ -192,6 +200,46 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{private static final String
         });
         mlocationClient.startLocation();
     }
+    @Override
+    public String getCity() {
+        return mCity;
+    }
+
+    /**
+     * 重点内容，高德地图的POI 搜索接口
+     * @param key
+     * @param listener
+     */
+    @Override
+    public void poiSearch(String key, final OnSearchedListener listener) {
+        if (!TextUtils.isEmpty(key)){
+            //1组装关键字
+            InputtipsQuery inputtipsQuery = new InputtipsQuery(key,"");
+            Inputtips inputtips = new Inputtips(mContext,inputtipsQuery);
+            //2开始异步搜索
+            inputtips.requestInputtipsAsyn();
+            //3监听处理搜索结果
+            inputtips.setInputtipsListener(new Inputtips.InputtipsListener() {
+                @Override
+                public void onGetInputtips(List<Tip> list, int code) {
+                    if (code == AMapException.CODE_AMAP_SUCCESS){
+                        //正确返回解析结果
+                        List<LocationInfo> locationInfos = new ArrayList<LocationInfo>();
+                        for (int i=0;i<list.size();i++){
+                            Tip tip = list.get(i);
+                            LocationInfo locationInfo = new LocationInfo(tip.getPoint().getLatitude(),tip.getPoint().getLongitude());
+                            locationInfo.setName(tip.getName());
+                            locationInfos.add(locationInfo);
+                        }
+                        listener.onSearched(locationInfos);
+                    }else{
+                     listener.onError(code);
+                    }
+                }
+            });
+        }
+
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -215,4 +263,6 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{private static final String
         mapView.onDestroy();
         mlocationClient.onDestroy();
     }
+
+
 }
