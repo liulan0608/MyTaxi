@@ -241,6 +241,28 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
 
     }
 
+    /**
+     *
+     * @param mStartLocation
+     * @param mEndLocation
+     * @param blue
+     * @param onRouteCompleteListener
+     */
+    @Override
+    public void driverRoute(LocationInfo mStartLocation, LocationInfo mEndLocation, int blue, OnRouteCompleteListener onRouteCompleteListener) {
+
+    }
+
+    @Override
+    public void clearAllMarkers() {
+
+    }
+
+    @Override
+    public void moveCamera(LocationInfo mStartLocation, LocationInfo mEndLocation) {
+
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         mapView.onSaveInstanceState(outState);

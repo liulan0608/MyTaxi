@@ -57,6 +57,19 @@ public interface ILbsLayer {
     void poiSearch(String s, OnSearchedListener listener);
 
     /**
+     * 绘制亮点之间的行车路径
+     * @param mStartLocation
+     * @param mEndLocation
+     * @param blue
+     * @param onRouteCompleteListener
+     */
+    void driverRoute(LocationInfo mStartLocation, LocationInfo mEndLocation, int blue, OnRouteCompleteListener onRouteCompleteListener);
+
+    void clearAllMarkers();
+
+    void moveCamera(LocationInfo mStartLocation, LocationInfo mEndLocation);
+
+    /**
      * created on: 2018/7/9 下午5:53
      * description:
      */
@@ -68,5 +81,9 @@ public interface ILbsLayer {
      interface OnSearchedListener {
         void onSearched(List<LocationInfo> results);
         void onError(int code);
+    }
+
+     interface OnRouteCompleteListener {
+         void onComplete(RouteInfo result);
     }
 }

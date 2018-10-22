@@ -2,6 +2,7 @@ package com.dalimao.mytaxi.main.view;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -63,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     //记录起点和终点
     private LocationInfo mStartLocation;
     private LocationInfo mEndLocation;
-
+    private  Bitmap mStartBit;
+    private  Bitmap mEndBit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +191,32 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
      * @param mStartLocation
      * @param mEndLocation
      */
-    private void showRoute(LocationInfo mStartLocation, LocationInfo mEndLocation) {
+    private void showRoute(final LocationInfo mStartLocation, final LocationInfo mEndLocation) {
+        mLbsLayer.clearAllMarkers();
+        addStartMarker();
+        addEndMarker();
+        mLbsLayer.driverRoute(mStartLocation,mEndLocation, Color.BLUE
+                ,new ILbsLayer.OnRouteCompleteListener(){
+                    @Override
+                    public void onComplete(RouteInfo result) {
+                        MyLoger.d("driverRoute:"+result);
+                        mLbsLayer.moveCamera(mStartLocation,mEndLocation);
+                    }
+                });
+    }
 
+    private void addEndMarker() {
+        if (mStartBit == null || mStartBit.isRecycled()){
+            mStartBit = BitmapFactory.decodeResource(getResources(),R.drawable.start);
+        }
+        mLbsLayer.addOrUpdateMarker(mStartLocation,mStartBit);
+    }
+
+    private void addStartMarker() {
+        if (mEndBit == null || mEndBit.isRecycled()){
+            mEndBit = BitmapFactory.decodeResource(getResources(),R.drawable.end);
+        }
+        mLbsLayer.addOrUpdateMarker(mEndLocation,mEndBit);
     }
 
     /**
