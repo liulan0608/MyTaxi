@@ -21,6 +21,7 @@ import com.dalimao.mytaxi.common.http.api.API;
 import com.dalimao.mytaxi.common.lbs.GaodeLbsYayerImpl;
 import com.dalimao.mytaxi.common.lbs.ILbsLayer;
 import com.dalimao.mytaxi.common.lbs.LocationInfo;
+import com.dalimao.mytaxi.common.lbs.RouteInfo;
 import com.dalimao.mytaxi.common.util.DevUtil;
 import com.dalimao.mytaxi.common.util.MyLoger;
 import com.dalimao.mytaxi.main.presenter.IMainActivityPresenter;
@@ -193,8 +194,11 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
      */
     private void showRoute(final LocationInfo mStartLocation, final LocationInfo mEndLocation) {
         mLbsLayer.clearAllMarkers();
+        //绘制起点图标
         addStartMarker();
+        //绘制终点图标
         addEndMarker();
+         //绘制路径
         mLbsLayer.driverRoute(mStartLocation,mEndLocation, Color.BLUE
                 ,new ILbsLayer.OnRouteCompleteListener(){
                     @Override

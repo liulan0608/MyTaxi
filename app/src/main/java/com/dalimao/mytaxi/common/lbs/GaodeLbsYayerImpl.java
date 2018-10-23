@@ -20,19 +20,31 @@ import com.amap.api.maps2d.model.BitmapDescriptor;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.maps2d.model.PolylineOptions;
 import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
+import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.DriveStep;
+import com.amap.api.services.route.RideRouteResult;
+import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkRouteResult;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Request;
 
 /**
  * author: apple
@@ -60,6 +72,8 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
     private Map<String, Marker> markerMap = new HashMap<>();
 
     private String mCity;
+
+    private RouteSearch mRouteSearch;
     public GaodeLbsYayerImpl(Context context) {
         // 创建地图对象
         mapView = new MapView(context);
@@ -242,25 +256,111 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
     }
 
     /**
-     *
-     * @param mStartLocation
-     * @param mEndLocation
+     *绘制路径 两点之间 行车路径
+     * @param start
+     * @param start
      * @param blue
-     * @param onRouteCompleteListener
+     * @param listener
      */
     @Override
-    public void driverRoute(LocationInfo mStartLocation, LocationInfo mEndLocation, int blue, OnRouteCompleteListener onRouteCompleteListener) {
+    public void driverRoute(LocationInfo start, final LocationInfo end, int blue, final OnRouteCompleteListener listener) {
+        //1 组装起点和终点信息
+        LatLonPoint startLatLng = new LatLonPoint(start.getLatitude(),start.getLongitude());
+        LatLonPoint endLatLng = new LatLonPoint(end.getLatitude(),end.getLongitude());
+        RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(startLatLng,endLatLng);
+        //2 创建路径查询参数
+        //第一个参数表示路径规划的起点和终点
+        //第二个参数表示驾车模式
+        //第三个参数表示途经点
+//        第四个参数表示避让区域
+//        第五个参数表示避让道路
+        RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo,
+                RouteSearch.DrivingDefault,null,null,"");
+        //3创建搜索对象，异步路径规划驾车模式查询
+
+        if (mRouteSearch == null){
+            mRouteSearch = new RouteSearch(mContext);
+        }
+        //4 执行搜索
+        mRouteSearch.calculateDriveRouteAsyn(query);
+        mRouteSearch.setRouteSearchListener(new RouteSearch.OnRouteSearchListener() {
+            @Override
+            public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
+
+            }
+
+            @Override
+            public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {
+                // 1 获取第一条路径
+                DrivePath drivePath = driveRouteResult.getPaths().get(0);
+                //2 获取这条路径上的所有点，使用polyline绘制路径
+                PolylineOptions polylineOptions = new PolylineOptions();
+                polylineOptions.color(0x00fff);
+                //起点
+                LatLonPoint startPoint = driveRouteResult.getStartPos();
+                //路径中间步骤
+                List<DriveStep> drivePaths = drivePath.getSteps();
+                 //路径终点
+                LatLonPoint endPoint = driveRouteResult.getTargetPos();
+                //添加起点
+                polylineOptions.add(new LatLng(startPoint.getLatitude(),startPoint.getLongitude()));
+                //添加中间节点
+                for (DriveStep step:drivePaths){
+                    List<LatLonPoint> latlonPoints = step.getPolyline();
+                    for (LatLonPoint point: latlonPoints){
+                        LatLng latlng = new LatLng(point.getLatitude(),point.getLongitude());
+                        polylineOptions.add(latlng);
+                    }
+                }
+//                添加终点
+                polylineOptions.add(new LatLng(endPoint.getLatitude(),endPoint.getLongitude()));
+                //执行绘制
+                aMap.addPolyline(polylineOptions);
+                /**
+                 * 回调业务
+                 */
+                if (listener !=null){
+                    RouteInfo routeInfo = new RouteInfo();
+                    routeInfo.setTaxiCost(driveRouteResult.getTaxiCost());
+                    routeInfo.setDuration(1-+new Long(drivePath.getDuration()/1000*60).intValue());
+                    routeInfo.setDistance(drivePath.getDistance()/1000+0.5f);
+                    listener.onComplete(routeInfo);
+                }
+
+            }
+
+            @Override
+            public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int i) {
+
+            }
+
+            @Override
+            public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
+
+            }
+        });
 
     }
 
     @Override
     public void clearAllMarkers() {
-
+        aMap.clear();
+        markerMap.clear();
     }
 
     @Override
     public void moveCamera(LocationInfo mStartLocation, LocationInfo mEndLocation) {
-
+        try {
+            LatLng start = new LatLng(mStartLocation.getLatitude(),mStartLocation.getLongitude());
+            LatLng end = new LatLng(mEndLocation.getLatitude(),mEndLocation.getLongitude());
+            LatLngBounds.Builder b = LatLngBounds.builder();
+            b.include(start);
+            b.include(end);
+            LatLngBounds bounds = b.build();
+            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
