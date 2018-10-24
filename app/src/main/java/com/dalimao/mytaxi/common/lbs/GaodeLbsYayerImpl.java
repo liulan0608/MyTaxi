@@ -37,6 +37,7 @@ import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
+import com.dalimao.mytaxi.R;
 import com.dalimao.mytaxi.common.util.MyLoger;
 
 import java.util.ArrayList;
@@ -295,7 +296,7 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
                 DrivePath drivePath = driveRouteResult.getPaths().get(0);
                 //2 获取这条路径上的所有点，使用polyline绘制路径
                 PolylineOptions polylineOptions = new PolylineOptions();
-                polylineOptions.color(0x00fff);
+                polylineOptions.color(mContext.getResources().getColor(R.color.green));
                 //起点
                 LatLonPoint startPoint = driveRouteResult.getStartPos();
                 //路径中间步骤

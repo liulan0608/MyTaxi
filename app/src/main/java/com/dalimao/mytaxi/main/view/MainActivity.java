@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
         //绘制终点图标
         addEndMarker();
          //绘制路径
-        mLbsLayer.driverRoute(mStartLocation,mEndLocation, Color.BLUE
+        mLbsLayer.driverRoute(mStartLocation,mEndLocation, Color.GREEN
                 ,new ILbsLayer.OnRouteCompleteListener(){
                     @Override
                     public void onComplete(RouteInfo result) {
