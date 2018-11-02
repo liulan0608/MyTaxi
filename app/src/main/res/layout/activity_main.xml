@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:text="@string/locating"
             android:id="@+id/city"
+            android:layout_centerInParent="true"
             android:textSize="@dimen/text_size_large"
             android:textColor="@color/color_text_normal"/>
     </RelativeLayout>
@@ -34,7 +35,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dimen_64dp"
+        android:layout_margin="@dimen/dimen_44dp"
         android:padding="12dp"
         android:background="@color/bg_white"
         android:id="@+id/select_area">
@@ -73,7 +74,88 @@
             android:hint="@string/where_are_you_go"
             android:textColor="@color/color_text_normal"/>
     </LinearLayout>
-
-
     </LinearLayout>
+    <!--操作区-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/optArea"
+        android:padding="12dp"
+        android:background="@color/bg_white"
+        android:visibility="gone">
+        <!--状态提示区-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:id="@+id/tips_info"
+                android:textColor="@color/color_text_normal"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/loading_area"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                >
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calling_driver"
+                    android:id="@+id/loading_text"
+                    android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/color_text_normal"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        <!--操作区-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_gravity="center_horizontal"
+            android:weightSum="2"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Dialog.Button"
+                android:text="@string/call"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_call_driver"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Dialog.Button"
+                android:text="@string/cancel"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:id="@+id/btn_cancel"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Dialog.Button"
+                android:text="@string/pay"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:id="@+id/btn_pay"/>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
 </RelativeLayout>

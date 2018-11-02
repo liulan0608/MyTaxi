@@ -68,6 +68,8 @@ public interface ILbsLayer {
     void clearAllMarkers();
 
     void moveCamera(LocationInfo mStartLocation, LocationInfo mEndLocation);
+    //移动相机到某个点
+    void moveCameraToPoint(LocationInfo locationInfo, int scale);
 
     /**
      * created on: 2018/7/9 下午5:53

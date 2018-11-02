@@ -176,9 +176,7 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
     }
 
     public void setUpLocation() {
-
         //设置监听器
-
         mlocationClient.setLocationListener(new AMapLocationListener() {
             @Override
             public void onLocationChanged(AMapLocation aMapLocation) {
@@ -201,13 +199,10 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
                                 latLng , 17, 30, 30));
                         aMap.moveCamera(up);
                         if (mLocationChangeListener != null) {
-
                             mLocationChangeListener.onLocation(locationInfo);
                         }
-
                     }
                     if (mLocationChangeListener != null) {
-
                         mLocationChangeListener.onLocationChanged(locationInfo);
                     }
                 }
@@ -278,7 +273,6 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
         RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo,
                 RouteSearch.DrivingDefault,null,null,"");
         //3创建搜索对象，异步路径规划驾车模式查询
-
         if (mRouteSearch == null){
             mRouteSearch = new RouteSearch(mContext);
         }
@@ -289,7 +283,6 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
             public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
 
             }
-
             @Override
             public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {
                 // 1 获取第一条路径
@@ -323,13 +316,11 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
                 if (listener !=null){
                     RouteInfo routeInfo = new RouteInfo();
                     routeInfo.setTaxiCost(driveRouteResult.getTaxiCost());
-                    routeInfo.setDuration(1-+new Long(drivePath.getDuration()/1000*60).intValue());
+                    routeInfo.setDuration(10+new Long(drivePath.getDuration()/1000*60).intValue());
                     routeInfo.setDistance(drivePath.getDistance()/1000+0.5f);
                     listener.onComplete(routeInfo);
                 }
-
             }
-
             @Override
             public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int i) {
 
@@ -362,6 +353,13 @@ public class GaodeLbsYayerImpl implements  ILbsLayer{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void moveCameraToPoint(LocationInfo locationInfo, int scale) {
+        LatLng location = new LatLng(locationInfo.getLatitude(),locationInfo.getLongitude());
+        CameraUpdate up = CameraUpdateFactory.newCameraPosition(new CameraPosition(location,scale,30,30));
+        aMap.moveCamera(up);
     }
 
     @Override

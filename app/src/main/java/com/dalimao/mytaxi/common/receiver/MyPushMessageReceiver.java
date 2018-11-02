@@ -7,6 +7,8 @@ import android.content.Intent;
 import com.dalimao.mytaxi.common.databus.RxBus;
 import com.dalimao.mytaxi.common.lbs.LocationInfo;
 import com.dalimao.mytaxi.common.util.MyLoger;
+import com.dalimao.mytaxi.main.model.response.Order;
+import com.dalimao.mytaxi.main.model.response.OrderStateOptResponse;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -23,6 +25,7 @@ import cn.bmob.push.PushConstants;
 public class MyPushMessageReceiver extends BroadcastReceiver {
 
     private static final int MSG_TYPE_LOCATION = 1;
+    private static final int MSG_TYPE_DRIVE_ORDER = 2;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -31,16 +34,7 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
             String msg = intent.getStringExtra("msg");
 
             MyLoger.d("客户端收到推送内容："+msg);
-            //// TODO: 2018/10/22 通知业务或UI
-//{
-//            "data": {
-//                "key": "3136ff94-b6f8-4930-8300-b8132e50486e",
-//                        "latitude": 30.180258,
-//                        "longitude": 120.213259,
-//                        "rotation": -16.74002
-//            },
-//            "type": 1
-//        }      }
+
             try {
                 JSONObject jsonObject = new JSONObject(msg);
                 int type = jsonObject.optInt("type");
@@ -48,6 +42,9 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
                     //位置变化
                     LocationInfo locationInfo = new Gson().fromJson(jsonObject.optString("data"),LocationInfo.class);
                     RxBus.getInstance().send(locationInfo);
+                }else if(type == MSG_TYPE_DRIVE_ORDER){
+                    Order order = new Gson().fromJson(jsonObject.optString("data"),Order.class);
+                    RxBus.getInstance().send(order);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
