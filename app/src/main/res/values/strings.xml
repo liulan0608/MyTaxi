@@ -23,6 +23,7 @@
     <string name="calling_driver">正在呼叫附近的司机</string>
     <string name="accept_info">司机：%1$s(车牌：%2$s)已经接单，全程%3$d公里，%4$d分钟到达</string>
     <string name="driver_arrive">司机：%1$s(车牌：%2$s)已经到达</string>
+    <string name="dirving">司机：%1$s(车牌：%2$s),行程中，还剩%3$.2f公里，%4$d分钟到达</string>
     <string name="order_cancel_suc">取消成功</string>
     <string name="order_cancel_error">取消失败</string>
     <string name="pay">支付</string>

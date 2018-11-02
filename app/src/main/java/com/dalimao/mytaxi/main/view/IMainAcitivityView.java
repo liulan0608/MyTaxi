@@ -28,7 +28,7 @@ public interface IMainAcitivityView extends IDialogView {
      * @param locationInfo
      */
 
-    void showLocitionChange(LocationInfo locationInfo);
+    void showLocationChange(LocationInfo locationInfo);
 
     /**
      * 呼叫司机成功
@@ -51,9 +51,29 @@ public interface IMainAcitivityView extends IDialogView {
     void showCancelFail();
 
     /**
-     * 司机接单
+     * 司机处理订单
+     * @param order
+     */
+    void showDriverAcceptOrder(Order order);
+
+    /**
+     * 司机抵达上车点
      * @param order
      */
 
-    void driverReceiveOrder(Order order);
+    void showDriverArriveStart(Order order);
+
+    /**
+     * 司机抵达目的地
+     * @param order
+     */
+    void showArriveEnd(Order order);
+
+    /**
+     * 乘客上车，开始行程
+     * @param order
+     */
+    void showStartDrive(Order order);
+
+    void updateDriver2StartRoute(LocationInfo locationInfo, Order mCurrentOrder);
 }

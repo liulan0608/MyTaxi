@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     private LocationInfo mEndLocation;
     private  Bitmap mStartBit;
     private  Bitmap mEndBit;
+    private  Bitmap mLocationBit;
 
     //当前是否登陆
     private boolean mIsLogin;
@@ -224,9 +225,7 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
         //清除地图上所有标记：路径信息，起点，终点
         mLbsLayer.clearAllMarkers();
         //添加定位标记
-        mLbsLayer.addOrUpdateMarker(mStartLocation,
-                BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.navi_map_gps_locked));
+        addLocationMarker();
         //恢复地图视野
         mLbsLayer.moveCameraToPoint(mStartLocation,17);
         //获取附近的司机
@@ -308,22 +307,20 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     }
 
     /**
-     * 司机已接单
+     * 司机接单
      * @param order
      */
     @Override
-    public void driverReceiveOrder(final Order order) {
+    public void showDriverAcceptOrder(final Order order) {
          // 提示信息
         MyLoger.toast(this,getResources().getString(R.string.accept_info));
         //清除标记
         mLbsLayer.clearAllMarkers();
         //司机到乘客之间路线绘制
         final LocationInfo info = new LocationInfo(order.getDriverLatitude(),order.getDriverLongitude());
-        showLocitionChange(info);
+        showLocationChange(info);
         //显示我的位置
-        mLbsLayer.addOrUpdateMarker(mStartLocation,
-                BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.navi_map_gps_locked));
+        addLocationMarker();
         //显示司机到乘客的路径
         mLbsLayer.driverRoute(info, mStartLocation, Color.BLUE, new ILbsLayer.OnRouteCompleteListener() {
             @Override
@@ -342,8 +339,88 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
                 mTips.setText(stringBuilder.toString());
             }
         });
+    }
+
+    /**
+     * 司机抵达上车点
+     * @param order
+     */
+
+    @Override
+    public void showDriverArriveStart(Order order) {
+        String arriveTem = getResources().getString(R.string.driver_arrive);
+        mTips.setText(String.format(arriveTem,order.getDriverName(),order.getCarNo()));
+    }
+    /**
+     * 司机抵达目的地
+     * @param order
+     */
+    @Override
+    public void showArriveEnd(Order order) {
+        String tipsTemp = getResources().getString(R.string.pay_info);
+        mTips.setText(String.format(tipsTemp,order.getCost(),order.getDriverName(),order.getCarNo()));
+        mBtnPay.setVisibility(View.VISIBLE);
 
     }
+    /**
+     * 司机开始行程
+     * @param order
+     */
+    @Override
+    public void showStartDrive(Order order) {
+        mBtnCancel.setVisibility(View.GONE);
+        mBtnCall.setVisibility(View.GONE);
+        LocationInfo info = new LocationInfo(order.getDriverLatitude(),order.getDriverLongitude());
+        //路径规划绘制
+        updateDriver2EndRoute(info,order);
+    }
+
+    @Override
+    public void updateDriver2StartRoute(LocationInfo locationInfo, final Order order) {
+        mLbsLayer.clearAllMarkers();
+        addLocationMarker();
+        showLocationChange(locationInfo);
+        mLbsLayer.driverRoute(locationInfo, mStartLocation, Color.GREEN,
+                new ILbsLayer.OnRouteCompleteListener() {
+                    @Override
+                    public void onComplete(RouteInfo result) {
+                        String tipsTmp = getResources().getString(R.string.accept_info);
+                        mTips.setText(String.format(tipsTmp
+                                ,order.getDriverName()
+                                ,order.getCarNo()
+                                ,result.getDistance()
+                                ,result.getDuration()));
+                    }
+                });
+        mLbsLayer.moveCamera(locationInfo,mStartLocation);
+    }
+
+    /**
+     * 司机到终点路径绘制或更新
+     * @param info
+     * @param order
+     */
+    private void updateDriver2EndRoute(LocationInfo info, final Order order) {
+        mLbsLayer.clearAllMarkers();
+        addEndMarker();
+        showLocationChange(info);
+        mLbsLayer.driverRoute(info, mEndLocation, Color.GREEN,
+                new ILbsLayer.OnRouteCompleteListener() {
+                    @Override
+                    public void onComplete(RouteInfo result) {
+                        String tipsTmp = getResources().getString(R.string.dirving);
+                        mTips.setText(String.format(tipsTmp
+                                ,order.getDriverName()
+                                ,order.getCarNo()
+                                ,result.getDistance()
+                                ,result.getDuration()));
+                    }
+                });
+        mLbsLayer.moveCamera(info,mEndLocation);
+    }
+
+
+
     /**
      * 更新POI列表
      * @param results
@@ -409,7 +486,13 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
         mOptArea.setVisibility(View.VISIBLE);
 
     }
-
+    private void addLocationMarker() {
+        if (mLocationBit == null || mLocationBit.isRecycled()){
+            mLocationBit = BitmapFactory.decodeResource(getResources()
+                    ,R.mipmap.navi_map_gps_locked);
+        }
+        mLbsLayer.addOrUpdateMarker(mStartLocation,mLocationBit);
+    }
     private void addStartMarker() {
         if (mStartBit == null || mStartBit.isRecycled()){
             mStartBit = BitmapFactory.decodeResource(getResources(),R.drawable.start);
@@ -465,12 +548,12 @@ public class MainActivity extends AppCompatActivity implements IMainAcitivityVie
     public void showNears(List<LocationInfo> data) {
 
         for (LocationInfo info : data){
-            showLocitionChange(info);
+            showLocationChange(info);
         }
     }
 
     @Override
-    public void showLocitionChange(LocationInfo locationInfo) {
+    public void showLocationChange(LocationInfo locationInfo) {
         if (mDriverBit == null || mDriverBit.isRecycled()){
             mDriverBit = BitmapFactory.decodeResource(getResources(),R.mipmap.car);
         }

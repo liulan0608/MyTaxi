@@ -107,13 +107,33 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
  *司机位置改变
  */@RegisterBus
     public void onLocationInfo(LocationInfo locationInfo){
-    view.showLocitionChange(locationInfo);
+    if (mCurrentOrder!=null&&mCurrentOrder.getState() == OrderStateOptResponse.ORDER_STATE_ACCEPT){
+        view.updateDriver2StartRoute(locationInfo,mCurrentOrder);
+    }else if (mCurrentOrder!=null&&mCurrentOrder.getState() == OrderStateOptResponse.ORDER_STATE_START_DRIVE){
+        view.updateDriver2StartRoute(locationInfo,mCurrentOrder);
+    }else {
+        view.showLocationChange(locationInfo);
+    }
     }
    /**
  *司机接单
  */@RegisterBus
-    public void onDriverReceiveOrder(Order order){
-    view.driverReceiveOrder(order);
+    public void onDriverOptOrder(Order order){
+       mCurrentOrder = order;
+       if (order.getState() == OrderStateOptResponse.ORDER_STATE_ACCEPT){
+           //司机接单
+           view.showDriverAcceptOrder(order);
+       }else if(order.getState() == OrderStateOptResponse.ORDER_STATE_ARRIVE_START){
+           //司机抵达上车点
+            view.showDriverArriveStart(order);
+       }else if(order.getState() == OrderStateOptResponse.ORDER_STATE_START_DRIVE){
+           //乘客上车，开始行程
+           view.showStartDrive(order);
+       }else if(order.getState() == OrderStateOptResponse.ORDER_STATE_ARRIVE_END){
+           //乘客到达，结束行程
+           view.showArriveEnd(order);
+       }
+
     }
     /**
      * 呼叫司机响应--订单状态的响应
