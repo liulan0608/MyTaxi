@@ -31,4 +31,14 @@ public interface IMainActivityPresenter {
      * 取消订单
      */
     void cancelOrder();
+
+    /**
+     * 订单支付
+     */
+    void orderPay();
+
+    /**
+     * 获取待处理订单
+     */
+    void getProcessingOrder();
 }

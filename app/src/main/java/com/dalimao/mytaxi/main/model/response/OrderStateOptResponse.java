@@ -14,7 +14,7 @@ public class OrderStateOptResponse extends BaseBizResponse{
     public final  static  int ORDER_STATE_ARRIVE_START = 2;//司机抵达
     public final  static  int ORDER_STATE_START_DRIVE = 3;//司机开始行程
     public final  static  int ORDER_STATE_ARRIVE_END = 4;//到底目的地
-
+    public static final int ORDER_STATE_PAY = 5;//订单支付
 
 
     private int state;

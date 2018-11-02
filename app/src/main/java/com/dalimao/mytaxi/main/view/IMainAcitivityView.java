@@ -33,7 +33,7 @@ public interface IMainAcitivityView extends IDialogView {
     /**
      * 呼叫司机成功
      */
-    void showCallDriverSuc();
+    void showCallDriverSuc(Order order);
 
     /***
      * 呼叫司机失败
@@ -76,4 +76,11 @@ public interface IMainAcitivityView extends IDialogView {
     void showStartDrive(Order order);
 
     void updateDriver2StartRoute(LocationInfo locationInfo, Order mCurrentOrder);
+
+    /**
+     * 支付成功
+     */
+    void showPaySuc(Order order);
+
+    void showPayFail();
 }

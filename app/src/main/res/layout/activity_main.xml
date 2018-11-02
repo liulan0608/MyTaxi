@@ -119,6 +119,15 @@
                     android:textColor="@color/color_text_normal"
                     />
             </LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Dialog.Button"
+                android:layout_gravity="center"
+                android:text="@string/pay"
+                android:layout_margin="2dp"
+                android:visibility="gone"
+                android:id="@+id/btn_pay"/>
         </LinearLayout>
         <!--操作区-->
         <LinearLayout
@@ -144,16 +153,7 @@
                 android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/btn_cancel"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Dialog.Button"
-                android:layout_gravity="center"
-                android:text="@string/pay"
-                android:layout_margin="2dp"
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:id="@+id/btn_pay"/>
+
 
 
         </LinearLayout>

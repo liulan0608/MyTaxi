@@ -42,4 +42,11 @@ public interface IMainManager {
      * 取消订单
      */
     void cancelOrder(String id);
+
+    /**
+     * 订单支付
+     */
+    void pay(String id);
+
+    void getProcessOrder();
 }

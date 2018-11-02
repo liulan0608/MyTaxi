@@ -176,4 +176,45 @@ public class MainManagerImpl implements IMainManager {
 
 
     }
+
+    /**
+     *
+     */
+    @Override
+    public void pay(final String orderId) {
+        RxBus.getInstance().chainProcess(new Func1() {
+            @Override
+            public Object call(Object o) {
+                IRequest request = new BaseRequest(API.PAY_SUCCESS);
+                request.setBody("id",orderId);
+                IResponse response = httpClient.post(request,false);
+                OrderStateOptResponse orderStateOptResponse = new OrderStateOptResponse();
+                orderStateOptResponse.setCode(response.getCode());
+                orderStateOptResponse.setState(OrderStateOptResponse.ORDER_STATE_PAY);
+                return orderStateOptResponse;
+            }
+        });
+    }
+
+    @Override
+    public void getProcessOrder() {
+        RxBus.getInstance().chainProcess(new Func1() {
+            @Override
+            public Object call(Object o) {
+                Login login = (Login) preferences.getData_object(SaveData_withPreferences.KEY_ACCOUNT, Login.class);
+                String uid = login.getUid();
+                IRequest request = new BaseRequest(API.GET_PROCESSING_ORDER);
+                request.setBody("id",uid);
+                IResponse response = httpClient.post(request,false);
+                OrderStateOptResponse orderStateOptResponse = new OrderStateOptResponse();
+                if (response.getCode() == BaseBizResponse.STATE_OK){
+                    orderStateOptResponse = new Gson().fromJson(response.getData(),OrderStateOptResponse.class);
+                    orderStateOptResponse.setState(orderStateOptResponse.getData().getState());
+                    orderStateOptResponse.setCode(response.getCode());
+                    return orderStateOptResponse;
+                }
+                return null;
+            }
+        });
+    }
 }

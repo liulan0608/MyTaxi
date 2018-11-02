@@ -76,6 +76,16 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
 
     }
 
+    @Override
+    public void orderPay() {
+        mainManager.pay(mCurrentOrder.getOrderId());
+    }
+
+    @Override
+    public void getProcessingOrder() {
+        mainManager.getProcessOrder();
+    }
+
     /**
      * 登陆返回结果
      * @param response
@@ -143,9 +153,10 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
     public void responseCallDriver(OrderStateOptResponse response){
     if (response.getState() == OrderStateOptResponse.ORDER_STATE_CREATE){
         if (response.getCode() == BaseBizResponse.STATE_OK){
-            view.showCallDriverSuc();
+
             //保存当前的订单
             mCurrentOrder = response.getData();
+            view.showCallDriverSuc(mCurrentOrder);
         }else{
             view.showCallDriverFail();
         }
@@ -156,7 +167,14 @@ public class MainActivityPresenterImpl implements IMainActivityPresenter {
         }else{
             view.showCancelFail();
         }
+    }else if(response.getState() == OrderStateOptResponse.ORDER_STATE_PAY){
+        if (response.getCode() == BaseBizResponse.STATE_OK){
+            view.showPaySuc(mCurrentOrder);
+        }else{
+            view.showPayFail();
+        }
     }
+
 }
 
 
