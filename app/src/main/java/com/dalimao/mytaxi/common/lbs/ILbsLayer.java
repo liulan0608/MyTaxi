@@ -2,7 +2,12 @@ package com.dalimao.mytaxi.common.lbs;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
+
+import com.dalimao.mytaxi.main.view.MainActivity;
+
+import java.util.List;
 
 /**
  * author: apple
@@ -37,6 +42,35 @@ public interface ILbsLayer {
     void onSaveInstanceState(Bundle outState);
     void onPause();
     void onDestroy();
+
+    /**
+     * 获取当前城市
+     * @return
+     */
+    String getCity();
+
+    /**
+     * 联动搜索附近的位置
+     * @param s
+     * @param listener
+     */
+    void poiSearch(String s, OnSearchedListener listener);
+
+    /**
+     * 绘制亮点之间的行车路径
+     * @param mStartLocation
+     * @param mEndLocation
+     * @param blue
+     * @param onRouteCompleteListener
+     */
+    void driverRoute(LocationInfo mStartLocation, LocationInfo mEndLocation, int blue, OnRouteCompleteListener onRouteCompleteListener);
+
+    void clearAllMarkers();
+
+    void moveCamera(LocationInfo mStartLocation, LocationInfo mEndLocation);
+    //移动相机到某个点
+    void moveCameraToPoint(LocationInfo locationInfo, int scale);
+
     /**
      * created on: 2018/7/9 下午5:53
      * description:
@@ -46,5 +80,12 @@ public interface ILbsLayer {
         void onLocation(LocationInfo info);
     }
     // TODO: 2018/7/9 ipo搜索
+     interface OnSearchedListener {
+        void onSearched(List<LocationInfo> results);
+        void onError(int code);
+    }
 
+     interface OnRouteCompleteListener {
+         void onComplete(RouteInfo result);
+    }
 }

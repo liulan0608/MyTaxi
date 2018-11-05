@@ -26,6 +26,18 @@ public class API {
     public static  final String GET_NEARBY_DRIVER = Config.getDomain()+"/f34e28da5816433d/getNearDrivers?latitude=${latitude}&longitude=${longitude}";
     //更新上报位置
     public static  final String UPDATE_LOCATION = Config.getDomain()+"/f34e28da5816433d/updateUserLocation";
+    //呼叫司机
+    public static  final String CALL_DRIVER = Config.getDomain()+"/f34e28da5816433d/callDriver";
+    //取消订单
+    public static  final String CANCEl_ORDER = Config.getDomain()+"/f34e28da5816433d/cancelOrder";
+    //支付成功
+    public static  final String PAY_SUCCESS = Config.getDomain()+"/f34e28da5816433d/paySuc";
+    //历史订单列表
+    public static  final String GET_ORDER_LIST = Config.getDomain()+"/f34e28da5816433d/getOrderList";
+    //获取处理中的订单
+    public static  final String GET_PROCESSING_ORDER = Config.getDomain()+"/f34e28da5816433d/getProcessingOrder";
+
+
 
 
     public static class Config{

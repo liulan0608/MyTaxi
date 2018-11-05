@@ -19,4 +19,26 @@ public interface IMainActivityPresenter {
      * @param locationInfo
      */
     void updateLocationToServer(LocationInfo locationInfo);
+
+    void callDriver(String mPushKey, float mCost, LocationInfo mStartLocation, LocationInfo mEndLocation);
+
+    /**
+     * 获取订单列表
+     */
+    void getOrderList();
+
+    /**
+     * 取消订单
+     */
+    void cancelOrder();
+
+    /**
+     * 订单支付
+     */
+    void orderPay();
+
+    /**
+     * 获取待处理订单
+     */
+    void getProcessingOrder();
 }

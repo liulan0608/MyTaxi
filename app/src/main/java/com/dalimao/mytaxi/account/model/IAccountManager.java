@@ -2,6 +2,8 @@ package com.dalimao.mytaxi.account.model;
 
 import android.os.Handler;
 
+import com.dalimao.mytaxi.common.lbs.LocationInfo;
+
 /**
  * author: apple
  * created on: 2018/5/24 上午11:35
@@ -57,6 +59,7 @@ public interface IAccountManager {
      * token 登录
      */
     void loginByToken();
+
 
 
 }

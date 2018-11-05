@@ -23,4 +23,30 @@ public interface IMainManager {
      * @param locationInfo
      */
     void updateLocationToServer(LocationInfo locationInfo);
+
+    /**
+     * 呼叫司机
+     * @param mPushKey
+     * @param mCost
+     * @param mStartLocation
+     * @param mEndLocation
+     */
+    void callDriver(String mPushKey, float mCost, LocationInfo mStartLocation, LocationInfo mEndLocation);
+
+    /**
+     * 获取订单列表
+     */
+    void getOrderList();
+
+    /**
+     * 取消订单
+     */
+    void cancelOrder(String id);
+
+    /**
+     * 订单支付
+     */
+    void pay(String id);
+
+    void getProcessOrder();
 }
